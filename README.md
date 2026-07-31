@@ -87,8 +87,18 @@ Copie `.env.example` para `.env` em `apps/api` e preencha:
 cd apps/api
 npm install
 npx prisma db push        # sincroniza o schema com o banco (cria as collections)
+npm run db:seed           # (opcional) dados de demonstração: famílias, missionários e almoços
 npm run start:dev         # http://localhost:3000/api
 ```
+
+O seed é **idempotente** (pode rodar várias vezes) e cria usuários de acesso demo:
+
+| Papel | E-mail | Senha |
+|---|---|---|
+| ADMIN | `admin@missionarylunch.com` | `6UETYr1xpb7P` |
+| COORDENADOR | `coord.demo@igreja.com` | `Demo@2026` |
+
+> Alterne as senhas em produção. O código do seed fica em `apps/api/prisma/seed.ts`.
 
 A documentação interativa da API fica em **http://localhost:3000/api/docs**.
 
@@ -113,6 +123,7 @@ npm run dev               # http://localhost:5173
 | api | `npm run lint` | Lint (ESLint + Prettier) |
 | api | `npm test` | Testes unitários (Jest) |
 | api | `npx prisma db push` | Sincroniza o schema no banco |
+| api | `npm run db:seed` | Seed de demonstração (idempotente) |
 | web | `npm run dev` | Sobe em watch mode |
 | web | `npm run build` | Build de produção (`dist/`) |
 | web | `npm run lint` | Lint (ESLint) |
@@ -150,10 +161,10 @@ npm run dev               # http://localhost:5173
 
 ## 🛣️ Roadmap (MVP)
 
-- [ ] Aplicação de papéis (ADMIN/COORDINATOR) nas rotas e na interface
-- [ ] Gestão de usuários (criação, convite, alteração de papel)
-- [ ] Validações de integridade (almoço duplicado no dia, referências inativas)
-- [ ] Seed de demonstração com dados realistas
+- [x] Aplicação de papéis (ADMIN/COORDINATOR) nas rotas e na interface
+- [x] Gestão de usuários (criação, convite, alteração de papel)
+- [x] Validações de integridade (almoço duplicado no dia, referências inativas)
+- [x] Seed de demonstração com dados realistas
 - [ ] Dashboard com métricas reais e exportação da escala semanal
 
 ---
