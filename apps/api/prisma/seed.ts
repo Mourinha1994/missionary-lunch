@@ -46,6 +46,11 @@ const MISSIONARIES: SeedMissionary[] = [
 
 const LUNCH_COUNT = 6;
 
+const TRANSFER_RELEASE_REASON =
+  'Semana de transferência — segunda-feira liberada';
+const TRANSFER_BLOCK_REASON =
+  'Transferência — P-Day passa para quarta-feira';
+
 function nextWeekdays(count: number): Date[] {
   const dates: Date[] = [];
   const current = new Date();
@@ -60,6 +65,17 @@ function nextWeekdays(count: number): Date[] {
   }
 
   return dates;
+}
+
+function nextMondayAfter(date: Date, weeksAhead = 1): Date {
+  const result = new Date(date);
+  result.setUTCHours(0, 0, 0, 0);
+
+  let diff = (1 - result.getUTCDay() + 7) % 7;
+  if (diff === 0) diff = 7;
+
+  result.setUTCDate(result.getUTCDate() + diff + (weeksAhead - 1) * 7);
+  return result;
 }
 
 async function seedUsers() {
@@ -166,6 +182,58 @@ async function seedLunches(familyIds: string[], missionaryIds: string[]) {
   }
 }
 
+async function seedPdayDemo() {
+  const configCount = await prisma.pdayConfig.count();
+
+  if (configCount === 0) {
+    await prisma.pdayConfig.create({
+      data: {
+        dayOfWeek: 1,
+        startDate: new Date('2024-01-01T00:00:00.000Z'),
+        reason: 'Padrão do sistema (segunda-feira)',
+        createdBy: 'sistema',
+      },
+    });
+
+    console.log('P-Day: configuração padrão (segunda-feira) criada.');
+  } else {
+    console.log(`P-Day: ${configCount} configuração(ões) existente(s) — padrão não criado.`);
+  }
+
+  const exceptionCount = await prisma.pdayException.count();
+
+  if (exceptionCount > 0) {
+    console.log(`P-Day: ${exceptionCount} exceção(ões) existente(s) — troca de transferência não criada.`);
+    return;
+  }
+
+  const monday = nextMondayAfter(new Date(), 2);
+  const wednesday = new Date(monday);
+  wednesday.setUTCDate(wednesday.getUTCDate() + 2);
+
+  await prisma.pdayException.create({
+    data: {
+      date: monday,
+      blocked: false,
+      reason: TRANSFER_RELEASE_REASON,
+      createdBy: 'sistema',
+    },
+  });
+
+  await prisma.pdayException.create({
+    data: {
+      date: wednesday,
+      blocked: true,
+      reason: TRANSFER_BLOCK_REASON,
+      createdBy: 'sistema',
+    },
+  });
+
+  console.log(
+    `P-Day: troca por transferência na semana de ${monday.toISOString().split('T')[0]} (segunda liberada, quarta bloqueada).`,
+  );
+}
+
 async function main() {
   await seedUsers();
 
@@ -173,6 +241,7 @@ async function main() {
   const { active: missionaryIds } = await seedMissionaries();
 
   await seedLunches(familyIds, missionaryIds);
+  await seedPdayDemo();
 
   console.log('\nSeed concluído.');
   console.log('Acesso demo:');
