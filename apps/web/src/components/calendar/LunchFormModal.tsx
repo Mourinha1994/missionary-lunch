@@ -75,7 +75,7 @@ export function LunchFormModal({ open, onClose, initialDate, lunchId }: Props) {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
-    if (!date || !familyId) return
+    if (!date || !familyId || missionaryIds.length === 0) return
 
     const payload = {
       date,
@@ -157,6 +157,11 @@ export function LunchFormModal({ open, onClose, initialDate, lunchId }: Props) {
                 </label>
               ))}
             </div>
+            {missionaryIds.length === 0 && (
+              <p className="text-xs text-slate-500">
+                Selecione pelo menos um missionário.
+              </p>
+            )}
           </div>
 
           <div className="grid gap-2">
@@ -174,7 +179,7 @@ export function LunchFormModal({ open, onClose, initialDate, lunchId }: Props) {
             <Button type="button" variant="outline" onClick={onClose} disabled={saving}>
               Cancelar
             </Button>
-            <Button type="submit" disabled={loading || saving || !familyId}>
+            <Button type="submit" disabled={loading || saving || !familyId || missionaryIds.length === 0}>
               {saving ? 'Salvando…' : 'Salvar'}
             </Button>
           </DialogFooter>

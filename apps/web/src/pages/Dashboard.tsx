@@ -35,6 +35,15 @@ export function Dashboard() {
     queryFn: () => pdayApi.getBlockedDates(currentRange.start, currentRange.end),
   })
 
+  const { data: upcoming = [] } = useQuery({
+    queryKey: ['lunches', 'upcoming'],
+    queryFn: () =>
+      lunchesApi.getAll(
+        dayjs().format('YYYY-MM-DD'),
+        dayjs().add(30, 'day').format('YYYY-MM-DD'),
+      ),
+  })
+
   const handleDatesSet = useCallback((arg: DatesSetArg) => {
     setCurrentRange({
       start: dayjs(arg.start).format('YYYY-MM-DD'),
@@ -85,12 +94,10 @@ export function Dashboard() {
     { label: 'Almoços no mês', value: lunches.length, color: 'text-blue-600' },
     { label: 'Dias bloqueados', value: blockedDates.filter(b => b.blocked !== false).length, color: 'text-red-500' },
     {
-      label: 'Dias livres', value: (() => {
+      label: 'Dias livres',
+      value: (() => {
         const daysInMonth = dayjs(currentRange.start).daysInMonth()
-        const sundays = Array.from({ length: daysInMonth }, (_, i) =>
-          dayjs(currentRange.start).date(i + 1).day()
-        ).filter(d => d === 0).length
-        return daysInMonth - sundays - blockedDates.length - lunches.length
+        return Math.max(daysInMonth - blockedDates.length - lunches.length, 0)
       })(),
       color: 'text-amber-500'
     },
@@ -126,29 +133,58 @@ export function Dashboard() {
         ))}
       </div>
 
-      {/* Calendário */}
-      <div id="calendar-wrapper" className="flex-1 px-6 py-5 overflow-auto">
-        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden h-full">
-          <FullCalendar
-            ref={calendarRef}
-            plugins={[dayGridPlugin, interactionPlugin, listPlugin]}
-            initialView="dayGridMonth"
-            locale="pt-br"
-            events={[...lunchEvents, ...blockedEvents]}
-            datesSet={handleDatesSet}
-            dateClick={handleDateClick}
-            eventClick={handleEventClick}
-            height="100%"
-            headerToolbar={{
-              left: 'prev,next today',
-              center: 'title',
-              right: 'dayGridMonth'
-            }}
-            buttonText={{ today: 'Hoje', month: 'Mês' }}
-            dayMaxEvents={3}
-            eventDisplay="block"
-          />
+      {/* Calendário + próximos almoços */}
+      <div className="flex-1 min-h-0 flex gap-4 px-6 py-5">
+        <div id="calendar-wrapper" className="flex-1 min-w-0">
+          <div className="bg-white rounded-xl border border-slate-200 overflow-hidden h-full">
+            <FullCalendar
+              ref={calendarRef}
+              plugins={[dayGridPlugin, interactionPlugin, listPlugin]}
+              initialView="dayGridMonth"
+              locale="pt-br"
+              events={[...lunchEvents, ...blockedEvents]}
+              datesSet={handleDatesSet}
+              dateClick={handleDateClick}
+              eventClick={handleEventClick}
+              height="100%"
+              headerToolbar={{
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,listWeek'
+              }}
+              buttonText={{ today: 'Hoje', month: 'Mês', listWeek: 'Semana' }}
+              dayMaxEvents={3}
+              eventDisplay="block"
+            />
+          </div>
         </div>
+
+        <aside className="w-80 shrink-0 bg-white rounded-xl border border-slate-200 flex flex-col overflow-hidden">
+          <div className="px-4 py-3 border-b border-slate-200">
+            <h2 className="text-sm font-semibold text-slate-900">Próximos almoços</h2>
+          </div>
+          <div className="flex-1 overflow-y-auto p-3 space-y-2">
+            {upcoming.length === 0 ? (
+              <p className="text-sm text-slate-500">
+                Nenhum almoço agendado nos próximos 30 dias.
+              </p>
+            ) : (
+              upcoming.slice(0, 6).map((lunch) => (
+                <div key={lunch.id} className="rounded-lg border border-slate-100 p-3">
+                  <p className="text-xs font-medium text-blue-600">
+                    {dayjs(lunch.date).format('ddd, D [de] MMM')}
+                  </p>
+                  <p className="text-sm font-medium text-slate-900 mt-1">
+                    {lunch.family.name}
+                  </p>
+                  <p className="text-xs text-slate-500 mt-0.5 truncate">
+                    {lunch.missionaries.map((m) => m.name).join(' · ')}
+                  </p>
+                </div>
+              ))
+            )}
+          </div>
+        </aside>
       </div>
 
       <LunchFormModal
