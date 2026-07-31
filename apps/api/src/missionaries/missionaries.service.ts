@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateMissionaryDto } from './dto/create-missionary.dto';
 import { UpdateMissionaryDto } from './dto/update-missionary.dto';
@@ -24,18 +28,38 @@ export class MissionariesService {
     return missionary;
   }
 
+  private assertPeriodValid(startDate?: Date, endDate?: Date) {
+    if (startDate && endDate && endDate <= startDate) {
+      throw new BadRequestException(
+        'A data final da missão deve ser posterior à data inicial',
+      );
+    }
+  }
+
   create(dto: CreateMissionaryDto) {
+    const startDate = new Date(dto.startDate);
+    const endDate = new Date(dto.endDate);
+
+    this.assertPeriodValid(startDate, endDate);
+
     return this.prisma.missionary.create({
       data: {
         ...dto,
-        startDate: new Date(dto.startDate),
-        endDate: new Date(dto.endDate),
+        startDate,
+        endDate,
       },
     });
   }
 
   async update(id: string, dto: UpdateMissionaryDto) {
-    await this.findOne(id);
+    const current = await this.findOne(id);
+
+    const startDate = dto.startDate
+      ? new Date(dto.startDate)
+      : current.startDate;
+    const endDate = dto.endDate ? new Date(dto.endDate) : current.endDate;
+
+    this.assertPeriodValid(startDate, endDate);
 
     return this.prisma.missionary.update({
       where: { id },

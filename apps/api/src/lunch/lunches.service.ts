@@ -26,6 +26,60 @@ export class LunchesService {
     }
   }
 
+  private async assertNoDuplicateDate(date: Date, excludeId?: string) {
+    const start = new Date(date);
+    start.setUTCHours(0, 0, 0, 0);
+
+    const end = new Date(start);
+    end.setUTCDate(end.getUTCDate() + 1);
+
+    const existing = await this.prisma.lunch.findFirst({
+      where: {
+        date: { gte: start, lt: end },
+        ...(excludeId ? { id: { not: excludeId } } : {}),
+      },
+    });
+
+    if (existing) {
+      throw new BadRequestException('Já existe um almoço agendado nesta data');
+    }
+  }
+
+  private async assertFamilyAvailable(familyId: string) {
+    const family = await this.prisma.family.findUnique({
+      where: { id: familyId },
+    });
+
+    if (!family) throw new BadRequestException('Família não encontrada');
+    if (!family.active) {
+      throw new BadRequestException('A família selecionada está inativa');
+    }
+  }
+
+  private async assertMissionariesAvailable(missionaryIds?: string[]) {
+    if (!missionaryIds || missionaryIds.length === 0) return;
+
+    const missionaries = await this.prisma.missionary.findMany({
+      where: { id: { in: missionaryIds } },
+    });
+
+    const foundIds = new Set(missionaries.map((m) => m.id));
+    const missing = missionaryIds.filter((id) => !foundIds.has(id));
+
+    if (missing.length) {
+      throw new BadRequestException(
+        'Um ou mais missionários não foram encontrados',
+      );
+    }
+
+    const inactive = missionaries.filter((m) => !m.active);
+    if (inactive.length) {
+      throw new BadRequestException(
+        `O missionário "${inactive[0].name}" está inativo`,
+      );
+    }
+  }
+
   async findAll(query: LunchQueryDto) {
     const where: Prisma.LunchWhereInput = {};
 
@@ -83,6 +137,9 @@ export class LunchesService {
   async create(dto: CreateLunchDto) {
     const date = new Date(dto.date);
     await this.assertNotPday(date);
+    await this.assertNoDuplicateDate(date);
+    await this.assertFamilyAvailable(dto.familyId);
+    await this.assertMissionariesAvailable(dto.missionaryIds);
 
     return this.prisma.lunch.create({
       data: {
@@ -101,6 +158,15 @@ export class LunchesService {
     if (dto.date) {
       const newDate = new Date(dto.date);
       await this.assertNotPday(newDate);
+      await this.assertNoDuplicateDate(newDate, id);
+    }
+
+    if (dto.familyId) {
+      await this.assertFamilyAvailable(dto.familyId);
+    }
+
+    if (dto.missionaryIds !== undefined) {
+      await this.assertMissionariesAvailable(dto.missionaryIds);
     }
 
     return this.prisma.lunch.update({
