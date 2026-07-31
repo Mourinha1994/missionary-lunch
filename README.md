@@ -158,6 +158,20 @@ npm run dev               # http://localhost:5173
 
 ---
 
+---
+
+## 🔀 Fluxo de desenvolvimento (Git Flow)
+
+O projeto segue o modelo de branching **Git Flow** com **Conventional Commits**:
+
+- `main` — produção; `develop` — integração (branch padrão)
+- Features em `feature/*` (a partir de `develop`), releases em `release/*`, hotfixes em `hotfix/*` (a partir de `main`)
+- Toda mudança entra por **Pull Request** para `develop`/`main` — nunca commit direto
+
+Regras completas, templates de PR e convenção de commits: **[CONTRIBUTING.md](CONTRIBUTING.md)**
+
+---
+
 ## 📄 Licença
 
 Projeto privado — uso interno da coordenação de missionários da igreja.
