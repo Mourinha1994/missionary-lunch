@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(COORDINATOR)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Missionary {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  gender       Gender
+  startDate    DateTime
+  endDate      DateTime
+  area         String
+  phone        String?
+  active       Boolean  @default(true)
+  lunchIds     String[] @db.ObjectId
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Family {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  contact   String
+  phone     String
+  email     String?
+  address   String?
+  active    Boolean  @default(true)
+  lunches   Lunch[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Lunch {
+  id             String     @id @default(auto()) @map("_id") @db.ObjectId
+  date           DateTime
+  notes          String?
+  familyId       String     @db.ObjectId
+  family         Family     @relation(fields: [familyId], references: [id])
+  missionaryIds  String[]   @db.ObjectId
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+}
+
+model PdayConfig {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  dayOfWeek  Int      // 0=Dom, 1=Seg, 2=Ter, 3=Qua, 4=Qui, 5=Sex, 6=Sáb
+  startDate  DateTime // a partir de quando esta config é válida
+  reason     String?  // ex: "Transferência Jun/2025 - P-Day passa para quarta"
+  createdBy  String?  // nome ou ID do coordenador
+  createdAt  DateTime @default(now())
+}
+
+model PdayException {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  date        DateTime // data exata da exceção (ex: 2025-06-09)
+  blocked     Boolean  // false = liberar | true = bloquear extra
+  reason      String?  // ex: "Semana de transferência - segunda liberada"
+  createdBy   String?
+  createdAt   DateTime @default(now())
+}
+
+enum Role {
+  ADMIN
+  COORDINATOR
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}

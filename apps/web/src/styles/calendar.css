@@ -1,0 +1,167 @@
+.fc {
+    font-family: inherit;
+}
+
+.fc .fc-toolbar.fc-header-toolbar {
+    padding: 16px 18px 12px;
+    margin-bottom: 0;
+}
+
+.fc .fc-toolbar-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #0F172A;
+    text-transform: capitalize;
+}
+
+.fc .fc-button {
+    background: transparent;
+    border: 0.5px solid #E2E8F0;
+    color: #64748B;
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.15s;
+}
+
+.fc .fc-button:hover {
+    background: #F8FAFC;
+    border-color: #CBD5E1;
+    color: #0F172A;
+}
+
+.fc .fc-button-primary:not(:disabled).fc-button-active,
+.fc .fc-button-primary:not(:disabled):active {
+    background: #2563EB;
+    border-color: #2563EB;
+    color: white;
+}
+
+.fc .fc-button-group .fc-button {
+    border-radius: 0;
+}
+
+.fc .fc-button-group .fc-button:first-child {
+    border-radius: 8px 0 0 8px;
+}
+
+.fc .fc-button-group .fc-button:last-child {
+    border-radius: 0 8px 8px 0;
+}
+
+.fc .fc-today-button {
+    border-radius: 8px !important;
+}
+
+.fc .fc-col-header-cell {
+    background: #F8FAFC;
+    border-color: #E2E8F0;
+    padding: 8px 0;
+}
+
+.fc .fc-col-header-cell-cushion {
+    font-size: 11px;
+    font-weight: 600;
+    color: #94A3B8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0;
+}
+
+/* Segunda-feira destacada em vermelho no header */
+.fc .fc-col-header-cell.fc-day-mon .fc-col-header-cell-cushion {
+    color: #DC2626;
+}
+
+.fc .fc-daygrid-day {
+    border-color: #F1F5F9;
+}
+
+.fc .fc-daygrid-day-number {
+    font-size: 12px;
+    font-weight: 500;
+    color: #475569;
+    padding: 6px 8px;
+}
+
+.fc .fc-day-today .fc-daygrid-day-number {
+    background: #2563EB;
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 4px;
+    padding: 0;
+    font-size: 11px;
+}
+
+.fc .fc-day-today {
+    background: #FAFBFF !important;
+}
+
+/* Eventos */
+.fc .fc-event {
+    border-radius: 5px;
+    border: none;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 6px;
+    cursor: pointer;
+    transition: opacity 0.15s;
+}
+
+.fc .fc-event:hover {
+    opacity: 0.85;
+}
+
+/* Background events (P-Day bloqueado) */
+.fc .fc-bg-event {
+    opacity: 0.6;
+}
+
+/* Dias de outros meses */
+.fc .fc-day-other .fc-daygrid-day-number {
+    color: #CBD5E1;
+}
+
+/* List view */
+.fc .fc-list-event:hover td {
+    background: #F8FAFC;
+}
+
+.fc .fc-list-day-cushion {
+    background: #F1F5F9;
+    font-size: 12px;
+    font-weight: 600;
+    color: #475569;
+    text-transform: capitalize;
+}
+
+.fc .fc-list-event-title a {
+    font-size: 13px;
+    font-weight: 500;
+    color: #1E293B;
+}
+
+.fc .fc-list-event-time {
+    color: #94A3B8;
+    font-size: 12px;
+}
+
+/* Scrollbar */
+.fc .fc-scroller::-webkit-scrollbar {
+    width: 4px;
+}
+
+.fc .fc-scroller::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.fc .fc-scroller::-webkit-scrollbar-thumb {
+    background: #E2E8F0;
+    border-radius: 2px;
+}
