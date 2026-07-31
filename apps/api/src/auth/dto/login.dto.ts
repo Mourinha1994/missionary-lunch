@@ -11,18 +11,3 @@ export class LoginDto {
   @MinLength(6)
   password: string;
 }
-
-export class RegisterDto {
-  @ApiProperty()
-  @IsString()
-  name: string;
-
-  @ApiProperty()
-  @IsEmail()
-  email: string;
-
-  @ApiProperty()
-  @IsString()
-  @MinLength(6)
-  password: string;
-}
