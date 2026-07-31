@@ -25,11 +25,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         name: true,
         email: true,
         role: true,
+        active: true,
         createdAt: true,
         updatedAt: true,
       },
     });
-    if (!user) throw new UnauthorizedException();
+    if (!user || !user.active) throw new UnauthorizedException();
     return user;
   }
 }

@@ -14,6 +14,7 @@ const USER_SAFE_SELECT = {
   name: true,
   email: true,
   role: true,
+  active: true,
   createdAt: true,
   updatedAt: true,
 } satisfies Prisma.UserSelect;
@@ -48,6 +49,12 @@ export class AuthService {
     });
 
     if (!user) throw new UnauthorizedException('Credenciais inválidas');
+
+    if (!user.active) {
+      throw new UnauthorizedException(
+        'Usuário desativado. Contate um administrador.',
+      );
+    }
 
     const valid = await bcrypt.compare(dto.password, user.password);
 
