@@ -1,5 +1,5 @@
 // src/pages/Dashboard.tsx
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from '@fullcalendar/interaction'
@@ -14,8 +14,11 @@ import { Button } from '@/components/ui/button'
 import { Download, Plus } from 'lucide-react'
 import { LunchFormModal } from '@/components/calendar/LunchFormModal.tsx'
 import { exportCalendarAsPDF } from '@/lib/exportCalendar'
+import { useAuthStore } from '@/store/authStore'
+import { hasSeenTutorial, startTutorial } from '@/lib/onboarding'
 
 export function Dashboard() {
+  const user = useAuthStore((s) => s.user)
   const [currentRange, setCurrentRange] = useState({
     start: dayjs().startOf('month').format('YYYY-MM-DD'),
     end: dayjs().endOf('month').format('YYYY-MM-DD'),
@@ -50,6 +53,14 @@ export function Dashboard() {
       end: dayjs(arg.end).format('YYYY-MM-DD'),
     })
   }, [])
+
+  useEffect(() => {
+    if (hasSeenTutorial()) return
+    const timer = setTimeout(() => {
+      startTutorial(user?.role ?? 'COORDINATOR')
+    }, 700)
+    return () => clearTimeout(timer)
+  }, [user?.role])
 
   const handleDateClick = useCallback((arg: DateClickArg) => {
     const isBlocked = blockedDates.some(b => b.date === arg.dateStr)
@@ -114,10 +125,10 @@ export function Dashboard() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={() => exportCalendarAsPDF('calendar-wrapper')}>
+          <Button variant="outline" size="sm" data-tour="export-pdf" onClick={() => exportCalendarAsPDF('calendar-wrapper')}>
             <Download className="w-4 h-4 mr-2" /> Exportar PDF
           </Button>
-          <Button size="sm" onClick={() => { setSelectedDate(null); setSelectedLunchId(null); setIsModalOpen(true) }}>
+          <Button size="sm" data-tour="new-lunch" onClick={() => { setSelectedDate(null); setSelectedLunchId(null); setIsModalOpen(true) }}>
             <Plus className="w-4 h-4 mr-2" /> Novo almoço
           </Button>
         </div>
@@ -135,7 +146,7 @@ export function Dashboard() {
 
       {/* Calendário + próximos almoços */}
       <div className="flex-1 min-h-0 flex gap-4 px-6 py-5">
-        <div id="calendar-wrapper" className="flex-1 min-w-0">
+        <div id="calendar-wrapper" className="flex-1 min-w-0" data-tour="calendar">
           <div className="bg-white rounded-xl border border-slate-200 overflow-hidden h-full">
             <FullCalendar
               ref={calendarRef}
@@ -159,7 +170,7 @@ export function Dashboard() {
           </div>
         </div>
 
-        <aside className="w-80 shrink-0 bg-white rounded-xl border border-slate-200 flex flex-col overflow-hidden">
+        <aside className="w-80 shrink-0 bg-white rounded-xl border border-slate-200 flex flex-col overflow-hidden" data-tour="upcoming">
           <div className="px-4 py-3 border-b border-slate-200">
             <h2 className="text-sm font-semibold text-slate-900">Próximos almoços</h2>
           </div>

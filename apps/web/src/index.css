@@ -162,3 +162,32 @@ body {
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
 }
+.ml-tour-popover {
+  border-radius: 12px;
+  box-shadow: 0 20px 45px -12px rgb(0 0 0 / 0.35);
+}
+
+.ml-tour-popover .driver-popover-title {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.ml-tour-popover .driver-popover-next-btn,
+.ml-tour-popover .driver-popover-done-btn {
+  background-color: #2563eb;
+  text-shadow: none;
+  border-radius: 8px;
+}
+
+.ml-tour-popover .driver-popover-prev-btn {
+  color: #475569;
+  border-radius: 8px;
+}
+
+.ml-tour-popover .driver-popover-close-btn {
+  color: #94a3b8;
+}
+
+.ml-tour-popover .driver-popover-progress-text {
+  color: #94a3b8;
+}
