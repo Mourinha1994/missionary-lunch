@@ -87,7 +87,7 @@ Copie `.env.example` para `.env` em `apps/api` e preencha:
 cd apps/api
 npm install
 npx prisma db push        # sincroniza o schema com o banco (cria as collections)
-npm run db:seed           # (opcional) dados de demonstração: famílias, missionários e almoços
+npm run db:seed           # (opcional) dados de demonstração: famílias, missionários, almoços e troca de P-Day
 npm run start:dev         # http://localhost:3000/api
 ```
 
@@ -97,6 +97,8 @@ O seed é **idempotente** (pode rodar várias vezes) e cria usuários de acesso 
 |---|---|---|
 | ADMIN | `admin@missionarylunch.com` | `6UETYr1xpb7P` |
 | COORDENADOR | `coord.demo@igreja.com` | `Demo@2026` |
+
+Além de famílias, missionários e almoços, o seed cria uma **troca de P-Day por transferência** em uma semana futura (segunda liberada e quarta bloqueada), para demonstrar o recurso de exceções no calendário.
 
 > Alterne as senhas em produção. O código do seed fica em `apps/api/prisma/seed.ts`.
 
