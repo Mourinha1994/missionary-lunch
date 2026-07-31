@@ -174,4 +174,4 @@ Regras completas, templates de PR e convenção de commits: **[CONTRIBUTING.md](
 
 ## 📄 Licença
 
-Projeto privado — uso interno da coordenação de missionários da igreja.
+Distribuído sob a licença **MIT**. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
