@@ -167,6 +167,7 @@ npm run dev               # http://localhost:5173
 - [x] Gestão de usuários (criação, convite, alteração de papel)
 - [x] Validações de integridade (almoço duplicado no dia, referências inativas)
 - [x] Seed de demonstração com dados realistas
+- [x] Tutorial de boas-vindas (onboarding) com replay pelo menu lateral
 - [ ] Dashboard com métricas reais e exportação da escala semanal
 
 ---
