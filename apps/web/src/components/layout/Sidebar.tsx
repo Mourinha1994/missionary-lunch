@@ -1,8 +1,9 @@
 // src/components/layout/Sidebar.tsx
 import { NavLink } from 'react-router-dom'
-import { Calendar, Users, Home, Clock, Settings, LogOut } from 'lucide-react'
+import { Calendar, Users, Home, Clock, Settings, ShieldCheck, LogOut } from 'lucide-react'
 import { useAuthStore } from '@/store/authStore'
 import { cn } from '@/lib/utils'
+import type { Role } from '@/types'
 
 const navItems = [
   { to: '/', icon: Calendar, label: 'Calendário' },
@@ -14,6 +15,15 @@ const navItems = [
 const configItems = [
   { to: '/pday', icon: Settings, label: 'P-Day' },
 ]
+
+const adminItems = [
+  { to: '/users', icon: ShieldCheck, label: 'Usuários' },
+]
+
+const ROLE_LABEL: Record<Role, string> = {
+  ADMIN: 'Administrador',
+  COORDINATOR: 'Coordenador',
+}
 
 export function Sidebar() {
   const { user, logout } = useAuthStore()
@@ -75,6 +85,31 @@ export function Sidebar() {
             {label}
           </NavLink>
         ))}
+
+        {user?.role === 'ADMIN' && (
+          <>
+            <p className="px-3 py-2 mt-4 text-[10px] font-medium text-slate-500 uppercase tracking-widest">
+              Administração
+            </p>
+            {adminItems.map(({ to, icon: Icon, label }) => (
+              <NavLink
+                key={to}
+                to={to}
+                className={({ isActive }) =>
+                  cn(
+                    'flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors',
+                    isActive
+                      ? 'bg-violet-900/50 text-violet-300 font-medium'
+                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+                  )
+                }
+              >
+                <Icon className="w-4 h-4 shrink-0" />
+                {label}
+              </NavLink>
+            ))}
+          </>
+        )}
       </nav>
 
       <div className="p-4 border-t border-slate-800">
@@ -84,7 +119,7 @@ export function Sidebar() {
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-xs font-medium text-slate-200 truncate">{user?.name}</p>
-            <p className="text-[10px] text-slate-500">Coordenadora</p>
+            <p className="text-[10px] text-slate-500">{user ? ROLE_LABEL[user.role] : ''}</p>
           </div>
           <button onClick={logout} className="text-slate-500 hover:text-slate-300 transition-colors">
             <LogOut className="w-4 h-4" />

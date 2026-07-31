@@ -8,6 +8,7 @@ import { FamiliesModule } from './families/families.module';
 import { MissionariesModule } from './missionaries/missionaries.module';
 import { PdayModule } from './pday/pday.module';
 import { KeepAliveModule } from './keep-alive/keep-alive.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { KeepAliveModule } from './keep-alive/keep-alive.module';
     MissionariesModule,
     PdayModule,
     KeepAliveModule,
+    UsersModule,
   ],
 })
 export class AppModule {}
