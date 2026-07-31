@@ -1,23 +1,24 @@
 // src/components/layout/Sidebar.tsx
 import { NavLink } from 'react-router-dom'
-import { Calendar, Users, Home, Clock, Settings, ShieldCheck, LogOut } from 'lucide-react'
+import { Calendar, Users, Home, Clock, Settings, ShieldCheck, LogOut, HelpCircle } from 'lucide-react'
 import { useAuthStore } from '@/store/authStore'
 import { cn } from '@/lib/utils'
+import { startTutorial } from '@/lib/onboarding'
 import type { Role } from '@/types'
 
 const navItems = [
-  { to: '/', icon: Calendar, label: 'Calendário' },
-  { to: '/missionaries', icon: Users, label: 'Missionários' },
-  { to: '/families', icon: Home, label: 'Famílias' },
-  { to: '/lunches', icon: Clock, label: 'Almoços' },
+  { to: '/', icon: Calendar, label: 'Calendário', tour: 'nav-calendar' },
+  { to: '/missionaries', icon: Users, label: 'Missionários', tour: 'nav-missionaries' },
+  { to: '/families', icon: Home, label: 'Famílias', tour: 'nav-families' },
+  { to: '/lunches', icon: Clock, label: 'Almoços', tour: 'nav-lunches' },
 ]
 
 const configItems = [
-  { to: '/pday', icon: Settings, label: 'P-Day' },
+  { to: '/pday', icon: Settings, label: 'P-Day', tour: 'nav-pday' },
 ]
 
 const adminItems = [
-  { to: '/users', icon: ShieldCheck, label: 'Usuários' },
+  { to: '/users', icon: ShieldCheck, label: 'Usuários', tour: 'nav-users' },
 ]
 
 const ROLE_LABEL: Record<Role, string> = {
@@ -46,11 +47,12 @@ export function Sidebar() {
         <p className="px-3 py-2 text-[10px] font-medium text-slate-500 uppercase tracking-widest">
           Principal
         </p>
-        {navItems.map(({ to, icon: Icon, label }) => (
+        {navItems.map(({ to, icon: Icon, label, tour }) => (
           <NavLink
             key={to}
             to={to}
             end={to === '/'}
+            data-tour={tour}
             className={({ isActive }) =>
               cn(
                 'flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors',
@@ -68,10 +70,11 @@ export function Sidebar() {
         <p className="px-3 py-2 mt-4 text-[10px] font-medium text-slate-500 uppercase tracking-widest">
           Configurações
         </p>
-        {configItems.map(({ to, icon: Icon, label }) => (
+        {configItems.map(({ to, icon: Icon, label, tour }) => (
           <NavLink
             key={to}
             to={to}
+            data-tour={tour}
             className={({ isActive }) =>
               cn(
                 'flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors',
@@ -91,10 +94,11 @@ export function Sidebar() {
             <p className="px-3 py-2 mt-4 text-[10px] font-medium text-slate-500 uppercase tracking-widest">
               Administração
             </p>
-            {adminItems.map(({ to, icon: Icon, label }) => (
+            {adminItems.map(({ to, icon: Icon, label, tour }) => (
               <NavLink
                 key={to}
                 to={to}
+                data-tour={tour}
                 className={({ isActive }) =>
                   cn(
                     'flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors',
@@ -121,6 +125,13 @@ export function Sidebar() {
             <p className="text-xs font-medium text-slate-200 truncate">{user?.name}</p>
             <p className="text-[10px] text-slate-500">{user ? ROLE_LABEL[user.role] : ''}</p>
           </div>
+          <button
+            onClick={() => startTutorial(user?.role ?? 'COORDINATOR')}
+            title="Refazer tutorial"
+            className="text-slate-500 hover:text-slate-300 transition-colors"
+          >
+            <HelpCircle className="w-4 h-4" />
+          </button>
           <button onClick={logout} className="text-slate-500 hover:text-slate-300 transition-colors">
             <LogOut className="w-4 h-4" />
           </button>
