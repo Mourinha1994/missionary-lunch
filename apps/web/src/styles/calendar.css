@@ -2,39 +2,27 @@
     font-family: inherit;
 }
 
-.fc .fc-toolbar.fc-header-toolbar {
-    padding: 16px 18px 12px;
-    margin-bottom: 0;
-}
-
-.fc .fc-toolbar-title {
-    font-size: 15px;
-    font-weight: 600;
-    color: #0F172A;
-    text-transform: capitalize;
-}
-
 .fc .fc-button {
     background: transparent;
-    border: 0.5px solid #E2E8F0;
+    border: 1px solid #E3E6EC;
     color: #64748B;
     font-size: 12px;
-    padding: 5px 10px;
+    padding: 6px 12px;
     border-radius: 8px;
     font-weight: 500;
     transition: all 0.15s;
 }
 
 .fc .fc-button:hover {
-    background: #F8FAFC;
-    border-color: #CBD5E1;
+    background: #F1F2F6;
+    border-color: #CCD2DC;
     color: #0F172A;
 }
 
 .fc .fc-button-primary:not(:disabled).fc-button-active,
 .fc .fc-button-primary:not(:disabled):active {
-    background: #2563EB;
-    border-color: #2563EB;
+    background: #2553E0;
+    border-color: #2553E0;
     color: white;
 }
 
@@ -55,39 +43,39 @@
 }
 
 .fc .fc-col-header-cell {
-    background: #F8FAFC;
-    border-color: #E2E8F0;
+    background: #F6F7F9;
+    border-color: #E3E6EC;
     padding: 8px 0;
 }
 
 .fc .fc-col-header-cell-cushion {
     font-size: 11px;
     font-weight: 600;
-    color: #94A3B8;
+    color: #93A1B4;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     padding: 0;
 }
 
-/* Segunda-feira destacada em vermelho no header */
+/* P-Day (segunda-feira) destacada em vermelho no header */
 .fc .fc-col-header-cell.fc-day-mon .fc-col-header-cell-cushion {
     color: #DC2626;
 }
 
 .fc .fc-daygrid-day {
-    border-color: #F1F5F9;
+    border-color: #E3E6EC;
 }
 
 .fc .fc-daygrid-day-number {
     font-size: 12px;
     font-weight: 500;
-    color: #475569;
+    color: #64748B;
     padding: 6px 8px;
 }
 
 .fc .fc-day-today .fc-daygrid-day-number {
-    background: #2563EB;
-    color: white;
+    background: #2553E0 !important;
+    color: white !important;
     border-radius: 50%;
     width: 24px;
     height: 24px;
@@ -100,12 +88,12 @@
 }
 
 .fc .fc-day-today {
-    background: #FAFBFF !important;
+    background: transparent !important;
 }
 
 /* Eventos */
 .fc .fc-event {
-    border-radius: 5px;
+    border-radius: 6px;
     border: none;
     font-size: 11px;
     font-weight: 500;
@@ -125,30 +113,30 @@
 
 /* Dias de outros meses */
 .fc .fc-day-other .fc-daygrid-day-number {
-    color: #CBD5E1;
+    color: #93A1B4;
 }
 
 /* List view */
 .fc .fc-list-event:hover td {
-    background: #F8FAFC;
+    background: #F6F7F9;
 }
 
 .fc .fc-list-day-cushion {
-    background: #F1F5F9;
+    background: #F1F2F6;
     font-size: 12px;
     font-weight: 600;
-    color: #475569;
+    color: #3C4658;
     text-transform: capitalize;
 }
 
 .fc .fc-list-event-title a {
     font-size: 13px;
     font-weight: 500;
-    color: #1E293B;
+    color: #0F172A;
 }
 
 .fc .fc-list-event-time {
-    color: #94A3B8;
+    color: #93A1B4;
     font-size: 12px;
 }
 
@@ -162,6 +150,25 @@
 }
 
 .fc .fc-scroller::-webkit-scrollbar-thumb {
-    background: #E2E8F0;
+    background: #E9EBF0;
     border-radius: 2px;
+}
+
+/* Alinhamento com o design system */
+.fc .fc-scrollgrid {
+    border-color: #E3E6EC;
+}
+
+.fc .fc-bg-event.pday-block {
+    background: linear-gradient(135deg, #FEF2F2, #FDF3F3);
+    opacity: 1;
+}
+
+.fc .fc-bg-event.pday-liberated {
+    background: #DEE8FF;
+    opacity: 1;
+}
+
+.fc .fc-daygrid-day.pday-block-cell .fc-daygrid-day-number {
+    color: #DC2626;
 }
