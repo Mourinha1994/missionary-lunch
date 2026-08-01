@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Missionary Lunch — Design System &amp; Protótipo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   MISSIONARY LUNCH — DESIGN SYSTEM (protótipo HTML)
+   Toda a "fundação" está aqui, como tokens CSS prontos para
+   serem portados para o Tailwind v4 (@theme) e para o Figma.
+   ============================================================ */
+
+:root{
+  /* ---------- Cor (neutral) ---------- */
+  --canvas:#F6F7F9;
+  --surface:#FFFFFF;
+  --surface-2:#F1F2F6;
+  --surface-3:#E9EBF0;
+  --border:#E3E6EC;
+  --border-strong:#CCD2DC;
+  --text-900:#0F172A;
+  --text-700:#3C4658;
+  --text-500:#64748B;
+  --text-400:#93A1B4;
+  --white:#FFFFFF;
+
+  /* ---------- Brand "Azul Missão" ---------- */
+  --brand-50:#EEF3FF;  --brand-100:#DEE8FF;  --brand-200:#C0D4FF;
+  --brand-300:#94B6FE; --brand-400:#5D8CFB;  --brand-500:#3568F3;
+  --brand-600:#2553E0; --brand-700:#1E43C0;  --brand-800:#1D399C;
+  --brand-900:#1B3378;
+
+  /* ---------- Semânticas ---------- */
+  --success-50:#ECFDF5; --success-100:#D6F5E5; --success-600:#059669; --success-700:#047857;
+  --warning-50:#FFFBEB; --warning-100:#FDF0CE; --warning-600:#D97706; --warning-700:#B45309;
+  --danger-50:#FEF2F2;  --danger-100:#FEE2E2;  --danger-600:#DC2626;  --danger-700:#B91C1C;
+  --info-50:#F0F9FF;    --info-100:#E0F2FE;    --info-600:#0284C7;    --info-700:#0369A1;
+
+  /* ---------- Categóricas (pessoas/gênero) ---------- */
+  --cat-male-100:#E0E7FF; --cat-male-600:#4F46E5;
+  --cat-female-100:#FFE4E6; --cat-female-600:#E11D48;
+
+  /* ---------- Tipografia ---------- */
+  --font-sans:'Geist','Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --text-display:clamp(1.75rem,3.2vw,2.25rem);
+  --text-h1:1.375rem;   /* título de página   */
+  --text-h2:1rem;       /* título de seção    */
+  --text-h3:0.9375rem;  /* título de card     */
+  --text-body:0.9375rem;/* corpo              */
+  --text-sm:0.8125rem;  /* secundário         */
+  --text-xs:0.75rem;    /* rótulo/caption     */
+  --lh-tight:1.25; --lh-body:1.55;
+
+  /* ---------- Espaçamento (escala de 4px) ---------- */
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px;
+  --sp-5:20px; --sp-6:24px; --sp-8:32px; --sp-10:40px; --sp-12:48px; --sp-16:64px;
+
+  /* ---------- Raio ---------- */
+  --r-sm:6px; --r-md:8px; --r-lg:12px; --r-xl:16px; --r-2xl:20px; --r-pill:999px;
+
+  /* ---------- Elevação (borda + sombra sutil) ---------- */
+  --sh-1:0 1px 2px rgba(15,23,42,.04);
+  --sh-2:0 4px 14px -4px rgba(15,23,42,.10);
+  --sh-3:0 14px 34px -10px rgba(15,23,42,.18);
+  --sh-4:0 28px 60px -16px rgba(15,23,42,.28);
+
+  /* ---------- Movimento ---------- */
+  --dur-1:150ms; --dur-2:220ms; --dur-3:300ms;
+  --ease: cubic-bezier(.2,.8,.3,1);
+}
+
+/* ================== BASE ================== */
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font-sans);
+  font-size:var(--text-body);
+  line-height:var(--lh-body);
+  color:var(--text-700);
+  background:var(--canvas);
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{color:var(--text-900);line-height:var(--lh-tight);font-weight:700;letter-spacing:-0.01em}
+p{margin:0}
+a{color:var(--brand-600);text-decoration:none}
+code{font-size:.85em;background:var(--surface-2);padding:1px 5px;border-radius:5px;color:var(--text-700)}
+
+/* ================== TOKENS (cabeçalho do protótipo) ================== */
+.page-head{display:flex;align-items:center;gap:var(--sp-4);padding:var(--sp-5) var(--sp-6);
+  background:linear-gradient(120deg,var(--brand-900) 0%,var(--brand-700) 60%,var(--brand-600) 100%);
+  color:#fff;position:sticky;top:0;z-index:50}
+.page-head .logo{width:40px;height:40px;border-radius:12px;background:var(--brand-500);
+  display:grid;place-items:center;color:#fff;flex:0 0 auto;box-shadow:var(--sh-2)}
+.page-head h1{color:#fff;font-size:1.05rem;font-weight:600;line-height:1.1}
+.page-head p{color:rgba(255,255,255,.72);font-size:var(--text-xs)}
+.tabs{display:flex;gap:var(--sp-1);margin-left:auto;flex-wrap:wrap}
+.tabs button{border:none;background:rgba(255,255,255,.10);color:#fff;font:inherit;font-size:var(--text-xs);
+  font-weight:500;padding:8px 14px;border-radius:var(--r-pill);cursor:pointer;transition:background var(--dur-1) var(--ease)}
+.tabs button:hover{background:rgba(255,255,255,.18)}
+.tabs button.on{background:#fff;color:var(--brand-800);font-weight:600}
+
+.view{display:none;max-width:1180px;margin:0 auto;padding:var(--sp-8) var(--sp-6) var(--sp-16)}
+.view.on{display:block}
+.section-title{font-size:var(--text-h1);margin:var(--sp-8) 0 var(--sp-2)}
+.section-sub{color:var(--text-500);font-size:var(--text-sm);max-width:70ch;margin-bottom:var(--sp-6)}
+h3.blk{font-size:var(--text-h2);margin:var(--sp-6) 0 var(--sp-3);display:flex;align-items:center;gap:8px}
+h3.blk::before{content:"";width:4px;height:16px;border-radius:2px;background:var(--brand-500)}
+
+/* ================== CARTÕES DE DOCUMENTAÇÃO ================== */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);padding:var(--sp-5);box-shadow:var(--sh-1)}
+.grid{display:grid;gap:var(--sp-4)}
+.grid-2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.grid-3{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.grid-4{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.swatch{border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;background:var(--surface)}
+.swatch .chip{height:56px}
+.swatch .meta{padding:10px 12px;font-size:var(--text-xs)}
+.swatch .meta b{display:block;color:var(--text-900);font-size:12px}
+.swatch .meta span{color:var(--text-400);font-size:11px}
+.demo-row{display:flex;flex-wrap:wrap;gap:var(--sp-3);align-items:center;margin-bottom:var(--sp-3)}
+.demo-block{margin-bottom:var(--sp-6)}
+.principle{border:1px solid var(--border);border-radius:var(--r-lg);padding:var(--sp-4);
+  background:var(--surface);border-top:3px solid var(--brand-500)}
+.principle b{color:var(--text-900);display:block;margin-bottom:4px;font-size:var(--text-h3)}
+.principle p{font-size:var(--text-sm);color:var(--text-500)}
+.dont, .do{display:flex;gap:10px;font-size:var(--text-sm);padding:10px 12px;border-radius:var(--r-md);margin-bottom:8px}
+.dont{background:var(--danger-50);color:var(--danger-700)}
+.do{background:var(--success-50);color:var(--success-700)}
+.dont::before{content:"✕";font-weight:700}
+.do::before{content:"✓";font-weight:700}
+.typo-row{display:flex;align-items:baseline;gap:var(--sp-4);border-bottom:1px solid var(--border);padding:10px 0}
+.typo-row .spec{width:200px;flex:0 0 auto;font-size:11px;color:var(--text-400);font-family:ui-monospace,monospace}
+.typo-row .sample{flex:1}
+
+/* ================== COMPONENTES ================== */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;cursor:pointer;
+  font:inherit;font-size:var(--text-sm);font-weight:500;line-height:1;
+  border-radius:var(--r-md);padding:0 18px;height:40px;min-height:40px;
+  transition:background var(--dur-1) var(--ease), border-color var(--dur-1) var(--ease),
+             box-shadow var(--dur-1) var(--ease), transform var(--dur-1) var(--ease);
+  text-decoration:none;white-space:nowrap}
+.btn:focus-visible{outline:2px solid var(--brand-500);outline-offset:2px}
+.btn:active{transform:translateY(1px)}
+.btn svg{width:16px;height:16px;flex:0 0 auto}
+.btn-primary{background:var(--brand-600);color:#fff;box-shadow:var(--sh-1)}
+.btn-primary:hover{background:var(--brand-700)}
+.btn-secondary{background:var(--surface-2);color:var(--text-700)}
+.btn-secondary:hover{background:var(--surface-3)}
+.btn-outline{background:var(--surface);color:var(--text-700);border:1px solid var(--border-strong)}
+.btn-outline:hover{border-color:var(--brand-400);color:var(--brand-700)}
+.btn-ghost{background:transparent;color:var(--text-500)}
+.btn-ghost:hover{background:var(--surface-2);color:var(--text-900)}
+.btn-danger{background:var(--danger-600);color:#fff}
+.btn-danger:hover{background:var(--danger-700)}
+.btn-link{background:none;color:var(--brand-600);height:auto;min-height:auto;padding:4px 2px;border-radius:4px;text-decoration:underline;text-underline-offset:3px}
+.btn-sm{height:34px;min-height:34px;padding:0 14px;font-size:var(--text-xs)}
+.btn-lg{height:48px;min-height:48px;padding:0 24px}
+.btn-block{width:100%}
+.btn[disabled]{opacity:.45;pointer-events:none}
+.icon-btn{width:40px;height:40px;min-height:40px;padding:0;border-radius:var(--r-md);border:1px solid transparent;
+  background:transparent;color:var(--text-500);cursor:pointer;display:inline-grid;place-items:center;
+  transition:all var(--dur-1) var(--ease)}
+.icon-btn:hover{background:var(--surface-2);color:var(--text-900)}
+.icon-btn svg{width:18px;height:18px}
+.icon-btn.danger:hover{background:var(--danger-50);color:var(--danger-600)}
+
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:var(--sp-4)}
+.field label{font-size:var(--text-xs);font-weight:600;color:var(--text-900)}
+.field .req{color:var(--danger-600)}
+.input{height:40px;min-height:40px;border:1px solid var(--border-strong);border-radius:var(--r-md);
+  background:var(--surface);padding:0 14px;font:inherit;font-size:var(--text-sm);color:var(--text-900);
+  transition:border-color var(--dur-1), box-shadow var(--dur-1);width:100%}
+.input::placeholder{color:var(--text-400)}
+.input:focus{outline:none;border-color:var(--brand-500);box-shadow:0 0 0 3px var(--brand-100)}
+.input.error{border-color:var(--danger-600)}
+.input.error:focus{box-shadow:0 0 0 3px var(--danger-100)}
+.hint{font-size:var(--text-xs);color:var(--text-400)}
+.hint.err{color:var(--danger-600)}
+.hint.ok{color:var(--success-600)}
+.select-wrap{position:relative}
+.select-wrap select{appearance:none;-webkit-appearance:none;padding-right:40px;cursor:pointer;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%2364748B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24'><path d='M6 9l6 6 6-6'/></svg>");
+  background-repeat:no-repeat;background-position:right 12px center}
+.textarea{height:auto;min-height:84px;padding:12px 14px;resize:vertical}
+
+.badge{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:var(--r-pill);
+  font-size:var(--text-xs);font-weight:500;line-height:1;white-space:nowrap}
+.badge .dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+.badge-brand{background:var(--brand-100);color:var(--brand-700)}
+.badge-neutral{background:var(--surface-2);color:var(--text-500)}
+.badge-success{background:var(--success-100);color:var(--success-700)}
+.badge-warning{background:var(--warning-100);color:var(--warning-700)}
+.badge-danger{background:var(--danger-100);color:var(--danger-700)}
+.badge-info{background:var(--info-100);color:var(--info-700)}
+.badge-male{background:var(--cat-male-100);color:var(--cat-male-600)}
+.badge-female{background:var(--cat-female-100);color:var(--cat-female-600)}
+.badge-outline{background:var(--surface);border:1px solid var(--border-strong);color:var(--text-500)}
+
+.alert{display:flex;gap:12px;padding:14px 16px;border-radius:var(--r-lg);font-size:var(--text-sm);
+  border:1px solid transparent}
+.alert svg{width:18px;height:18px;flex:0 0 auto;margin-top:2px}
+.alert b{display:block;color:inherit;font-weight:600;font-size:var(--text-sm)}
+.alert p{color:inherit;opacity:.85;margin-top:2px}
+.alert-info{background:var(--info-50);border-color:var(--info-100);color:var(--info-700)}
+.alert-success{background:var(--success-50);border-color:var(--success-100);color:var(--success-700)}
+.alert-warning{background:var(--warning-50);border-color:var(--warning-100);color:var(--warning-700)}
+.alert-danger{background:var(--danger-50);border-color:var(--danger-100);color:var(--danger-700)}
+
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);padding:var(--sp-5);
+  display:flex;gap:14px;align-items:center;box-shadow:var(--sh-1)}
+.stat .ico{width:44px;height:44px;border-radius:var(--r-lg);display:grid;place-items:center;flex:0 0 auto}
+.stat .ico svg{width:20px;height:20px}
+.stat .val{font-size:1.5rem;font-weight:700;color:var(--text-900);line-height:1.1}
+.stat .lbl{font-size:var(--text-xs);color:var(--text-500)}
+.stat .delta{font-size:var(--text-xs);font-weight:600;color:var(--success-600)}
+
+table.tbl{width:100%;border-collapse:collapse;background:var(--surface)}
+.tbl thead th{background:var(--surface-2);color:var(--text-500);font-size:var(--text-xs);
+  font-weight:600;text-transform:uppercase;letter-spacing:.04em;text-align:left;
+  padding:12px 16px;border-bottom:1px solid var(--border);white-space:nowrap}
+.tbl thead th.sortable{cursor:pointer;user-select:none}
+.tbl thead th.sortable::after{content:"↕";opacity:.4;margin-left:6px;font-size:10px}
+.tbl tbody td{padding:14px 16px;border-bottom:1px solid var(--border);font-size:var(--text-sm)}
+.tbl tbody tr:hover{background:var(--canvas)}
+.tbl tbody tr.is-today td:first-child{border-left:3px solid var(--brand-500)}
+.tbl tbody tr.is-past{opacity:.55}
+.row-actions{display:flex;gap:2px;justify-content:flex-end}
+.avatar{width:34px;height:34px;border-radius:var(--r-pill);display:grid;place-items:center;
+  font-size:var(--text-xs);font-weight:600;flex:0 0 auto}
+.f-cell{display:flex;align-items:center;gap:12px}
+.f-cell .main{font-weight:600;color:var(--text-900);line-height:1.25}
+.f-cell .sub{font-size:var(--text-xs);color:var(--text-400)}
+
+/* Diálogo */
+.overlay-demo{position:relative;border:1px dashed var(--border-strong);border-radius:var(--r-xl);
+  background:linear-gradient(rgba(15,23,42,.06),rgba(15,23,42,.06));padding:var(--sp-8);
+  display:grid;place-items:center;min-height:300px}
+.dialog{width:100%;max-width:420px;background:var(--surface);border-radius:var(--r-2xl);
+  box-shadow:var(--sh-4);padding:var(--sp-6)}
+.dialog .d-head{display:flex;align-items:center;gap:12px;margin-bottom:var(--sp-4)}
+.dialog .d-head .t{font-size:var(--text-h3);font-weight:600;color:var(--text-900)}
+.dialog .d-body{font-size:var(--text-sm);color:var(--text-500);margin-bottom:var(--sp-6)}
+.dialog .d-foot{display:flex;justify-content:flex-end;gap:var(--sp-3);border-top:1px solid var(--border);padding-top:var(--sp-4)}
+
+/* Toast */
+.toast-stack{display:flex;flex-direction:column;gap:10px;max-width:360px}
+.toast{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r-lg);box-shadow:var(--sh-3);padding:14px 16px;font-size:var(--text-sm);
+  border-left:4px solid var(--brand-500)}
+.toast.success{border-left-color:var(--success-600)}
+.toast.error{border-left-color:var(--danger-600)}
+.toast b{color:var(--text-900);font-weight:600}
+.toast p{color:var(--text-500);font-size:var(--text-xs);margin-top:2px}
+.toast svg{width:18px;height:18px;flex:0 0 auto;margin-top:1px}
+.toast.success svg{color:var(--success-600)}
+.toast.error svg{color:var(--danger-600)}
+.toast.info svg{color:var(--brand-500)}
+
+/* Empty state */
+.empty{border:1px dashed var(--border-strong);border-radius:var(--r-xl);padding:var(--sp-12) var(--sp-6);
+  text-align:center;background:var(--surface)}
+.empty .e-ico{width:56px;height:56px;border-radius:var(--r-xl);background:var(--surface-2);
+  display:grid;place-items:center;margin:0 auto var(--sp-4)}
+.empty .e-ico svg{width:26px;height:26px;color:var(--text-400)}
+.empty b{color:var(--text-900);font-size:var(--text-h3);display:block;margin-bottom:4px}
+.empty p{color:var(--text-400);font-size:var(--text-sm);margin-bottom:var(--sp-5)}
+
+/* Skeleton */
+.skel{border-radius:var(--r-md);background:linear-gradient(90deg,var(--surface-2) 25%,var(--surface-3) 50%,var(--surface-2) 75%);
+  background-size:200% 100%;animation:shimmer 1.4s infinite linear}
+@keyframes shimmer{to{background-position:-200% 0}}
+.skel-card{display:flex;flex-direction:column;gap:12px;padding:var(--sp-5);border:1px solid var(--border);border-radius:var(--r-xl);background:var(--surface)}
+
+/* Person card */
+.person{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-xl);padding:var(--sp-5);
+  transition:box-shadow var(--dur-2) var(--ease), border-color var(--dur-2) var(--ease);display:flex;flex-direction:column;gap:14px}
+.person:hover{box-shadow:var(--sh-2);border-color:var(--brand-200)}
+.person .top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.person .meta-row{display:flex;gap:8px;align-items:center;font-size:var(--text-sm);color:var(--text-500)}
+.person .meta-row svg{width:15px;height:15px;color:var(--text-400);flex:0 0 auto}
+.progress{height:6px;background:var(--surface-2);border-radius:var(--r-pill);overflow:hidden}
+.progress > div{height:100%;border-radius:var(--r-pill);background:var(--brand-500)}
+.progress.urgent > div{background:var(--warning-500)}
+
+/* Upcoming lunch card */
+.upcoming{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:12px 14px}
+.upcoming .date{font-size:var(--text-xs);font-weight:600;color:var(--brand-600)}
+.upcoming .fam{font-size:var(--text-sm);font-weight:600;color:var(--text-900);margin:4px 0}
+.upcoming .mis{font-size:var(--text-xs);color:var(--text-400);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* Calendário (mock do FullCalendar) */
+.cal{border:1px solid var(--border);border-radius:var(--r-xl);background:var(--surface);overflow:hidden}
+.cal-top{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border)}
+.cal-top .c-title{font-size:var(--text-h3);font-weight:600;color:var(--text-900);text-transform:capitalize}
+.cal-top .seg{display:flex;gap:6px}
+.cal-top .seg button{border:1px solid var(--border);background:var(--surface);color:var(--text-500);
+  font:inherit;font-size:var(--text-xs);font-weight:500;padding:6px 12px;border-radius:var(--r-md);cursor:pointer}
+.cal-top .seg button.on{background:var(--brand-600);border-color:var(--brand-600);color:#fff}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr)}
+.cal-dow{padding:8px;text-align:center;font-size:11px;font-weight:600;color:var(--text-400);
+  text-transform:uppercase;letter-spacing:.05em;background:var(--canvas);border-bottom:1px solid var(--border)}
+.cal-dow.pday{color:var(--danger-600)}
+.day{border:1px solid var(--border);border-bottom:none;border-right:none;min-height:96px;padding:6px;position:relative}
+.day:nth-child(7n){border-right:1px solid var(--border)}
+.day .num{font-size:var(--text-xs);font-weight:500;color:var(--text-500);width:22px;height:22px;
+  display:grid;place-items:center;border-radius:var(--r-pill);margin-bottom:4px}
+.day.today .num{background:var(--brand-600);color:#fff}
+.day.other .num{color:var(--text-400)}
+.day.blocked{background:linear-gradient(135deg,var(--danger-50),#FDF3F3)}
+.day.blocked .num{color:var(--danger-600)}
+.lunch-chip{display:block;background:var(--brand-600);color:#fff;border-radius:6px;font-size:11px;
+  font-weight:500;padding:2px 6px;margin-bottom:2px;line-height:1.35;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lunch-chip.free{background:var(--brand-100);color:var(--brand-800)}
+.more-chip{font-size:11px;color:var(--text-400);padding-left:6px}
+
+/* App shell mock */
+.shell{display:flex;border:1px solid var(--border);border-radius:var(--r-2xl);overflow:hidden;background:var(--canvas);
+  box-shadow:var(--sh-3);min-height:620px}
+.sidebar{width:224px;flex:0 0 auto;background:var(--brand-900);color:#fff;display:flex;flex-direction:column;padding:16px 12px}
+.sidebar .brand{display:flex;gap:10px;align-items:center;padding:4px 8px 16px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:14px}
+.sidebar .brand .logo{width:34px;height:34px;border-radius:10px;background:var(--brand-500);display:grid;place-items:center;flex:0 0 auto}
+.sidebar .brand b{font-size:var(--text-sm);font-weight:600;line-height:1.15;display:block}
+.sidebar .brand span{font-size:11px;color:rgba(255,255,255,.55)}
+.nav-sec{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.38);padding:10px 10px 6px}
+.nav-item{display:flex;gap:10px;align-items:center;padding:9px 10px;border-radius:var(--r-md);color:rgba(255,255,255,.66);
+  font-size:var(--text-sm);font-weight:500;cursor:pointer;transition:all var(--dur-1) var(--ease);margin-bottom:2px}
+.nav-item svg{width:16px;height:16px}
+.nav-item:hover{background:rgba(255,255,255,.06);color:#fff}
+.nav-item.on{background:var(--brand-600);color:#fff;font-weight:600}
+.sidebar .foot{margin-top:auto;padding-top:12px;border-top:1px solid rgba(255,255,255,.08);display:flex;gap:8px;align-items:center}
+.sidebar .foot .avatar{background:var(--brand-600);color:#fff}
+.sidebar .foot .who{flex:1;min-width:0}
+.sidebar .foot .who b{font-size:var(--text-xs);color:#fff;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sidebar .foot .who span{font-size:10px;color:rgba(255,255,255,.5)}
+.shell-main{flex:1;min-width:0;display:flex;flex-direction:column}
+.shell-head{background:var(--surface);border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.shell-head h2{font-size:var(--text-h1)}
+.shell-head p{font-size:var(--text-sm);color:var(--text-500);margin-top:2px}
+.shell-body{padding:20px 24px;display:flex;gap:20px;flex-wrap:wrap}
+.shell-body .cal{flex:1;min-width:320px}
+.upcoming-panel{width:300px;flex:0 0 auto;background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--r-xl);display:flex;flex-direction:column;overflow:hidden}
+.upcoming-panel .up-head{padding:12px 16px;border-bottom:1px solid var(--border);font-weight:600;font-size:var(--text-h3);color:var(--text-900)}
+.upcoming-panel .up-body{padding:12px;display:flex;flex-direction:column;gap:8px}
+
+/* Phone frame (mobile) */
+.phone{width:340px;border:10px solid #0F172A;border-radius:40px;background:var(--canvas);overflow:hidden;
+  box-shadow:var(--sh-4);margin:0 auto}
+.phone .notch{height:24px;background:#0F172A;border-radius:0 0 20px 20px;margin:0 auto;width:130px}
+.phone .p-head{padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between}
+.phone .p-head h4{font-size:var(--text-h3)}
+.phone .p-body{padding:0 14px;display:flex;flex-direction:column;gap:10px;min-height:480px}
+.bottom-nav{display:flex;border-top:1px solid var(--border);background:var(--surface);padding:6px 4px;justify-content:space-around}
+.bottom-nav .bn{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;color:var(--text-400);
+  padding:6px 10px;border-radius:var(--r-md);cursor:pointer;font-weight:500}
+.bottom-nav .bn.on{color:var(--brand-600)}
+.bottom-nav .bn svg{width:20px;height:20px}
+
+/* ================== FLUXOS DO COORDENADOR ================== */
+.seg{display:inline-flex;background:var(--surface-2);border-radius:var(--r-md);padding:3px;gap:2px;flex-wrap:wrap}
+.seg button{border:none;background:transparent;font:inherit;font-size:var(--text-xs);font-weight:500;color:var(--text-500);padding:6px 12px;border-radius:6px;cursor:pointer;transition:all var(--dur-1)}
+.seg button.on{background:var(--surface);color:var(--text-900);box-shadow:var(--sh-1)}
+.date-strip{display:flex;gap:8px;flex-wrap:wrap}
+.date-chip{display:flex;flex-direction:column;align-items:center;gap:2px;border:1px solid var(--border);border-radius:var(--r-md);padding:8px 12px;cursor:pointer;background:var(--surface);transition:all var(--dur-1)}
+.date-chip.on{border-color:var(--brand-500);background:var(--brand-50)}
+.date-chip .wd{font-size:11px;color:var(--text-400);font-weight:600;text-transform:uppercase}
+.date-chip .dy{font-size:var(--text-h3);font-weight:700;color:var(--text-900)}
+.date-chip.on .dy{color:var(--brand-600)}
+.fam-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--border);border-radius:var(--r-md);margin-bottom:6px;cursor:pointer;transition:all var(--dur-1);background:var(--surface)}
+.fam-row.on{border-color:var(--brand-500);background:var(--brand-50)}
+.fam-row .f-name{flex:1;font-size:var(--text-sm);font-weight:500;color:var(--text-900)}
+.wizard{border:1px solid var(--border);border-radius:var(--r-2xl);background:var(--surface);overflow:hidden;box-shadow:var(--sh-2)}
+.wizard .w-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.steps{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:var(--text-xs);color:var(--text-400)}
+.steps .st{display:flex;align-items:center;gap:6px}
+.steps .n{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-weight:600;font-size:11px;background:var(--surface-2);color:var(--text-400)}
+.steps .st.on .n{background:var(--brand-600);color:#fff}
+.steps .st.done .n{background:var(--success-600);color:#fff}
+.steps .bar{width:24px;height:2px;background:var(--border)}
+.steps .bar.done{background:var(--success-600)}
+.wizard .w-body{padding:20px}
+.week-card{border:1px solid var(--border);border-radius:var(--r-lg);padding:12px 14px;cursor:pointer;transition:all var(--dur-1);background:var(--surface)}
+.week-card.on{border-color:var(--brand-500);background:var(--brand-50)}
+.week-card .wk{font-size:var(--text-xs);color:var(--text-400);font-weight:600;text-transform:uppercase}
+.week-card .range{font-size:var(--text-h3);font-weight:700;color:var(--text-900);margin:2px 0 6px}
+.chg{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--r-md);margin-bottom:8px;font-size:var(--text-sm)}
+.chg .sw{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:0 0 auto;font-size:11px;font-weight:700}
+.chg .from{color:var(--text-400)}
+.chg .to{font-weight:600;color:var(--text-900)}
+.chg-unlock{background:var(--success-50);color:var(--success-700)}
+.chg-lock{background:var(--danger-50);color:var(--danger-700)}
+.chg .arr{color:var(--text-400)}
+.rot-badge{background:var(--warning-600);color:#fff;border-radius:6px;font-size:10px;font-weight:700;padding:0 4px;margin-left:4px}
+.weeknum{position:absolute;top:4px;right:5px;font-size:9px;font-weight:600;color:var(--text-400)}
+.day.liberated{background:var(--brand-50)}
+.day.liberated .num{color:var(--brand-600)}
+.transfer-banner{display:flex;gap:10px;align-items:center;padding:8px 14px;background:var(--warning-50);border-bottom:1px solid var(--warning-100);color:var(--warning-700);font-size:var(--text-xs)}
+.transfer-banner svg{width:15px;height:15px;flex:0 0 auto}
+.transfer-banner b{margin-right:auto}
+.transfer-banner button{border:none;background:var(--warning-600);color:#fff;font:inherit;font-size:11px;font-weight:600;padding:5px 12px;border-radius:var(--r-md);cursor:pointer}
+.toast .undo-btn{border:none;background:var(--brand-600);color:#fff;font:inherit;font-size:var(--text-xs);font-weight:600;padding:6px 12px;border-radius:var(--r-md);cursor:pointer;margin-left:auto}
+.toast .t-body{flex:1}
+.mini-cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.mini-cal .mh{text-align:center;font-size:10px;font-weight:600;color:var(--text-400);text-transform:uppercase}
+.mini-cal .mc{height:30px;border-radius:var(--r-sm);display:grid;place-items:center;font-size:11px;color:var(--text-500);background:var(--surface-2)}
+.mini-cal .mc.block{background:var(--danger-100);color:var(--danger-700)}
+.mini-cal .mc.exc{background:var(--brand-100);color:var(--brand-700)}
+.mini-cal .mc.free-day{background:var(--brand-50);color:var(--brand-600)}
+.prio{border:1px solid var(--border);border-left:4px solid var(--brand-500);border-radius:var(--r-md);padding:12px 14px;margin-bottom:10px;background:var(--surface);display:flex;gap:12px;align-items:flex-start}
+.prio.p1{border-left-color:var(--warning-600)}
+.prio.p2{border-left-color:var(--text-400)}
+.prio .p-tag{flex:0 0 auto;font-size:10px;font-weight:700;color:var(--text-400);border:1px solid var(--border);border-radius:6px;padding:2px 6px;text-transform:uppercase;letter-spacing:.03em}
+.prio.p0 .p-tag{color:var(--brand-600);border-color:var(--brand-200);background:var(--brand-50)}
+.prio.p1 .p-tag{color:var(--warning-700);border-color:var(--warning-100);background:var(--warning-50)}
+.prio b{display:block;color:var(--text-900);font-size:var(--text-sm);margin-bottom:2px}
+.prio p{font-size:var(--text-xs);color:var(--text-500)}
+
+/* Ajustes responsivos do próprio protótipo */
+@media (max-width:720px){
+  .page-head{flex-wrap:wrap;position:static}
+  .tabs{width:100%;margin-left:0}
+  .shell-body{flex-direction:column}
+  .upcoming-panel{width:100%}
+  .sidebar{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<header class="page-head">
+  <div class="logo">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 00-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg>
+  </div>
+  <div>
+    <h1>Missionary Lunch · Design System</h1>
+    <p>Proposta de UI/UX — protótipo navegável · v1.0</p>
+  </div>
+  <nav class="tabs" id="tabs">
+    <button data-v="tokens" class="on">Fundação</button>
+    <button data-v="components">Componentes</button>
+    <button data-v="screens">Telas</button>
+    <button data-v="flows">Fluxos do coordenador</button>
+  </nav>
+</header>
+
+<!-- ================================================================
+     FUNDAÇÃO
+================================================================= -->
+<section class="view on" id="view-tokens">
+
+  <h2 class="section-title">Princípios de design</h2>
+  <p class="section-sub">Direção para tudo o que se segue. Se uma decisão de interface contradizer um destes princípios, a interface é que está errada.</p>
+  <div class="grid grid-2">
+    <div class="principle"><b>1 · Clareza com calor</b><p>Ferramenta de igreja/comunidade, não um painel corporativo frio. Tom acolhedor, digno, com tipografia generosa e baixa fricção.</p></div>
+    <div class="principle"><b>2 · Legibilidade primeiro</b><p>O coordenador muitas vezes tem 40+ anos e usa o celular. Corpo ≥ 14px, contraste AA, nunca menos de 12px em textos funcionais.</p></div>
+    <div class="principle"><b>3 · Toque amigável</b><p>Alvos ≥ 40px, ações sempre visíveis — nada de botões que só aparecem no hover, inúteis em telas de toque.</p></div>
+    <div class="principle"><b>4 · Uma cor, um significado</b><p>Semânticas (sucesso/erro/alerta/info) e categóricas (gênero/áreas) são paletas separadas. Cor nunca é o único sinal.</p></div>
+    <div class="principle"><b>5 · Confiança</b><p>Ações destrutivas exigem confirmação, com possibilidade de reverter. Nunca usar métricas falsas. Estados (erro/vazio/carregando) sempre explícitos.</p></div>
+    <div class="principle"><b>6 · Mobile-first</b><p>O dia a dia acontece no WhatsApp. Tudo é desenhado primeiro para 375px e depois ampliado para desktop.</p></div>
+  </div>
+
+  <div class="grid grid-2" style="margin-top:var(--sp-6)">
+    <div class="card">
+      <h3 class="blk">Antipadrões a eliminar</h3>
+      <div class="dont">Botões de editar/apagar visíveis apenas no hover (descobertos e intocáveis)</div>
+      <div class="dont">Ícone de lixeira para "desativar" (semântica de exclusão; sem caminho de restaurar)</div>
+      <div class="dont">Verde com múltiplos sentidos: hoje, sucesso, ativo, liberado e realizado</div>
+      <div class="dont">Desativar família/missionário sem nenhuma confirmação</div>
+      <div class="dont">Métricas fictícias na tela de login ("24+ famílias")</div>
+    </div>
+    <div class="card">
+      <h3 class="blk">Padrões a adotar</h3>
+      <div class="do">Ações de linha sempre visíveis em ícones com tooltip + alvo mínimo 40px</div>
+      <div class="do">"Desativar" com diálogo de confirmação e redirecionamento claro ("Sem novos almoços")</div>
+      <div class="do">Paleta semântica única: sucesso/erro/alerta/info com etiquetas de texto</div>
+      <div class="do">Diálogo destrutivo padrão: título + consequência + botão perigoso + "Cancelar"</div>
+      <div class="do">Header de página consistente: título + contagem + ação primária à direita</div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Cor</h2>
+  <p class="section-sub">Base neutra em zinco (não cinza-azulado puro), "Azul Missão" como marca, e semânticas restritas ao significado delas. Categóricas separadas — gênero nunca usa cor semântica.</p>
+
+  <h3 class="blk">Brand — "Azul Missão"</h3>
+  <div class="grid grid-4">
+    <div class="swatch"><div class="chip" style="background:var(--brand-50)"></div><div class="meta"><b>brand-50</b><span>#EEF3FF · fundos claros</span></div></div>
+    <div class="swatch"><div class="chip" style="background:var(--brand-100)"></div><div class="meta"><b>brand-100</b><span>#DEE8FF · focus ring</span></div></div>
+    <div class="swatch"><div class="chip" style="background:var(--brand-300)"></div><div class="meta"><b>brand-300</b><span>#94B6FE · hover borders</span></div></div>
+    <div class="swatch"><div class="chip" style="background:var(--brand-500)"></div><div class="meta"><b>brand-500</b><span>#3568F3 · ícones</span></div></div>
+    <div class="swatch"><div class="chip" style="background:var(--brand-600)"></div><div class="meta"><b>brand-600</b><span>#2553E0 · ação primária</span></div></div>
+    <div class="swatch"><div class="chip" style="background:var(--brand-700)"></div><div class="meta"><b>brand-700</b><span>#1E43C0 · hover primária</span></div></div>
+    <div class="swatch"><div class="chip" style="background:var(--brand-900)"></div><div class="meta"><b>brand-900</b><span>#1B3378 · sidebar/login</span></div></div>
+  </div>
+
+  <h3 class="blk">Neutros</h3>
+  <div class="grid grid-4">
+    <div class="swatch"><div class="chip" style="background:var(--canvas);border-bottom:1px solid var(--border)"></div><div class="meta"><b>canvas</b><span>#F6F7F9 · fundo do app</span></div></div>
+    <div class="swatch"><div class="chip" style="background:var(--surface);border-bottom:1px solid var(--border)"></div><div class="meta"><b>surface</b><span>#FFFFFF · cards/tabelas</span></div></div>
+    <div class="swatch"><div class="chip" style="background:var(--surface-2)"></div><div class="meta"><b>surface-2</b><span>#F1F2F6 · headers/footers</span></div></div>
+    <div class="swatch"><div class="chip" style="background:var(--border)"></div><div class="meta"><b>border</b><span>#E3E6EC · divisórias</span></div></div>
+    <div class="swatch"><div class="chip" style="background:var(--text-900)"></div><div class="meta"><b>text-900</b><span>#0F172A · títulos</span></div></div>
+    <div class="swatch"><div class="chip" style="background:var(--text-700)"></div><div class="meta"><b>text-700</b><span>#3C4658 · corpo</span></div></div>
+    <div class="swatch"><div class="chip" style="background:var(--text-500)"></div><div class="meta"><b>text-500</b><span>#64748B · secundário</span></div></div>
+    <div class="swatch"><div class="chip" style="background:var(--text-400)"></div><div class="meta"><b>text-400</b><span>#93A1B4 · metadados</span></div></div>
+  </div>
+
+  <h3 class="blk">Semânticas</h3>
+  <div class="grid grid-4">
+    <div class="swatch"><div class="chip" style="background:var(--success-600)"></div><div class="meta"><b>success</b><span>#059669 · confirmado/ativo</span></div></div>
+    <div class="swatch"><div class="chip" style="background:var(--warning-600)"></div><div class="meta"><b>warning</b><span>#D97706 · atenção/prazo</span></div></div>
+    <div class="swatch"><div class="chip" style="background:var(--danger-600)"></div><div class="meta"><b>danger</b><span>#DC2626 · erro/exclusão</span></div></div>
+    <div class="swatch"><div class="chip" style="background:var(--info-600)"></div><div class="meta"><b>info</b><span>#0284C7 · explicação</span></div></div>
+  </div>
+
+  <h3 class="blk">Categóricas (pessoas)</h3>
+  <div class="grid grid-4">
+    <div class="swatch"><div class="chip" style="background:var(--cat-male-600)"></div><div class="meta"><b>Élder</b><span>#4F46E5 · indigo</span></div></div>
+    <div class="swatch"><div class="chip" style="background:var(--cat-female-600)"></div><div class="meta"><b>Irmã</b><span>#E11D48 · rose</span></div></div>
+    <div class="swatch"><div class="chip" style="background:linear-gradient(120deg,var(--brand-100),var(--surface-2))"></div><div class="meta"><b>P-Day</b><span>bloqueio = danger · liberado = success</span></div></div>
+  </div>
+
+  <h2 class="section-title">Tipografia</h2>
+  <p class="section-sub">Geist (já usada) com escala fluida. Corpo 15px no mínimo — leitura confortável para o público real.</p>
+  <div class="card">
+    <div class="typo-row"><div class="spec">display · clamp(28, 52) · 700 · -0.02em</div><div class="sample" style="font-size:var(--text-display);font-weight:700;color:var(--text-900);line-height:1.1">Almoço dos Missionários</div></div>
+    <div class="typo-row"><div class="spec">h1 · 22px · 700</div><div class="sample" style="font-size:var(--text-h1);font-weight:700;color:var(--text-900)">Calendário de almoços</div></div>
+    <div class="typo-row"><div class="spec">h2 · 16px · 700</div><div class="sample" style="font-size:var(--text-h2);font-weight:700;color:var(--text-900)">Próximos almoços</div></div>
+    <div class="typo-row"><div class="spec">h3 · 15px · 600</div><div class="sample" style="font-size:var(--text-h3);font-weight:600;color:var(--text-900)">Família Silva</div></div>
+    <div class="typo-row"><div class="spec">body · 15px · 400 · lh 1.55</div><div class="sample" style="font-size:var(--text-body)">12 almoços agendados em julho de 2026. Dias em vermelho são P-Day.</div></div>
+    <div class="typo-row"><div class="spec">sm · 13px · 400</div><div class="sample" style="font-size:var(--text-sm);color:var(--text-500)">Coordenadora responsável · Irmã Santos</div></div>
+    <div class="typo-row"><div class="spec">xs · 12px · 600 (rótulos)</div><div class="sample" style="font-size:var(--text-xs);font-weight:600;color:var(--text-900)">FAMÍLIA RESPONSÁVEL</div></div>
+    <div class="typo-row"><div class="spec">caption · 11px (máx.)</div><div class="sample" style="font-size:var(--text-xs);color:var(--text-400)">Nunca usar abaixo de 12px em texto funcional</div></div>
+  </div>
+
+  <h2 class="section-title">Espaço · raio · elevação · movimento</h2>
+  <div class="grid grid-2">
+    <div class="card">
+      <h3 class="blk">Espaçamento (escala 4px)</h3>
+      <div class="demo-row">
+        <span class="badge badge-neutral">4</span><span class="badge badge-neutral">8</span><span class="badge badge-neutral">12</span>
+        <span class="badge badge-neutral">16</span><span class="badge badge-neutral">20</span><span class="badge badge-neutral">24</span>
+        <span class="badge badge-neutral">32</span><span class="badge badge-neutral">40</span><span class="badge badge-neutral">48</span>
+      </div>
+      <p class="hint">Gutter de página: 24px desktop · 16px mobile. Padding de card: 20px. Ritmo vertical padrão: 20–24px.</p>
+      <h3 class="blk" style="margin-top:var(--sp-6)">Raio</h3>
+      <div class="demo-row">
+        <span class="badge badge-neutral">sm 6</span><span class="badge badge-neutral">md 8</span><span class="badge badge-neutral">lg 12</span>
+        <span class="badge badge-neutral">xl 16</span><span class="badge badge-neutral">2xl 20</span><span class="badge badge-neutral">pill ∞</span>
+      </div>
+      <p class="hint">Botões 8px · cards 16px · diálogos 20px · badges pill. Calendário e formulários seguem a mesma regra.</p>
+    </div>
+    <div class="card">
+      <h3 class="blk">Elevação</h3>
+      <div class="demo-row">
+        <div style="box-shadow:var(--sh-1);background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:14px 20px;margin-right:8px">sh-1 · card</div>
+        <div style="box-shadow:var(--sh-2);background:var(--surface);border-radius:var(--r-md);padding:14px 20px;margin-right:8px">sh-2 · menu/popover</div>
+        <div style="box-shadow:var(--sh-3);background:var(--surface);border-radius:var(--r-md);padding:14px 20px;margin-right:8px">sh-3 · dialog</div>
+        <div style="box-shadow:var(--sh-4);background:var(--surface);border-radius:var(--r-md);padding:14px 20px">sh-4 · toast</div>
+      </div>
+      <h3 class="blk" style="margin-top:var(--sp-6)">Movimento</h3>
+      <p class="hint">Hover/ativo 150ms · entrada de painéis 220ms · overlays 300ms. Sempre com <code>prefers-reduced-motion</code> respeitado. Curva <code>cubic-bezier(.2,.8,.3,1)</code>.</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">Acessibilidade (linha de base)</h2>
+  <div class="grid grid-2">
+    <div class="card">
+      <h3 class="blk">Obrigatório</h3>
+      <div class="do">WCAG 2.1 AA — contraste mínimo 4.5:1 em texto</div>
+      <div class="do">Alvo de toque ≥ 40×40px</div>
+      <div class="do">Foco visível (focus ring) em todos os interativos</div>
+      <div class="do">Cor nunca como único sinal: badge + texto, ícone + tooltip</div>
+      <div class="do">Diálogos com <code>aria-describedby</code> e foco preso (Radix já entrega)</div>
+    </div>
+    <div class="card">
+      <h3 class="blk">Checklist por componente</h3>
+      <div class="do">Botões de ícone: <code>aria-label</code> + <code>title</code></div>
+      <div class="do">Tabelas: header <code>th scope</code>, sort anunciado</div>
+      <div class="do">Formulários: <code>label for</code>, erro associado, foco no primeiro campo do dialog</div>
+      <div class="do">Toasts: <code>role=status</code> / <code>alert</code></div>
+      <div class="do">Empty/loading: texto real (skeleton nunca substitui conteúdo)</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     COMPONENTES
+================================================================= -->
+<section class="view" id="view-components">
+
+  <h2 class="section-title">Botões</h2>
+  <div class="card demo-block">
+    <div class="demo-row">
+      <button class="btn btn-primary">Agendar almoço</button>
+      <button class="btn btn-secondary">Filtros</button>
+      <button class="btn btn-outline">Exportar PDF</button>
+      <button class="btn btn-ghost">Cancelar</button>
+      <button class="btn btn-danger">Remover</button>
+      <button class="btn btn-link">Ver tudo</button>
+    </div>
+    <div class="demo-row">
+      <button class="btn btn-primary btn-sm">Ação pequena</button>
+      <button class="btn btn-primary">Padrão · 40px</button>
+      <button class="btn btn-primary btn-lg">Ação principal (login)</button>
+      <button class="btn btn-primary" disabled>Carregando…</button>
+    </div>
+    <div class="demo-row">
+      <button class="icon-btn" aria-label="Editar" title="Editar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button>
+      <button class="icon-btn danger" aria-label="Desativar" title="Desativar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18"/></svg></button>
+      <button class="icon-btn" aria-label="Exportar" title="Exportar PDF"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg></button>
+    </div>
+    <p class="hint">Ícones de linha sempre têm tooltip + aria-label. Alvo mínimo 40px — no mobile isso é regra, não exceção.</p>
+  </div>
+
+  <h2 class="section-title">Formulários</h2>
+  <div class="grid grid-2">
+    <div class="card">
+      <div class="field">
+        <label for="ex-nome">Nome da família <span class="req">*</span></label>
+        <input id="ex-nome" class="input" placeholder="ex: Família Silva">
+      </div>
+      <div class="field">
+        <label for="ex-tel">Telefone / WhatsApp</label>
+        <input id="ex-tel" class="input error" value="(61) 99">
+        <span class="hint err">Telefone incompleto — informe DDD + número.</span>
+      </div>
+      <div class="field">
+        <label for="ex-sel">Família responsável</label>
+        <div class="select-wrap">
+          <select id="ex-sel" class="input">
+            <option>Família Silva</option>
+            <option>Família Santos</option>
+            <option>Família Almeida</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="ex-obs">Observações <span style="color:var(--text-400);font-weight:400">(opcional)</span></label>
+        <textarea id="ex-obs" class="input textarea" placeholder="Preferências alimentares, restrições…"></textarea>
+      </div>
+      <span class="hint ok">✓ Tudo certo, pode salvar.</span>
+    </div>
+    <div class="card">
+      <p class="hint" style="margin-bottom:var(--sp-4)">Padrão de input: 40px de altura, rótulo acima, erro em vermelho + mensagem de ajuda, sucesso com verificação. Foco sempre com anel de 3px em brand-100.</p>
+      <div class="field">
+        <label>Buscar missionário</label>
+        <div style="position:relative">
+          <svg style="position:absolute;left:12px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--text-400)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <input class="input" style="padding-left:38px" placeholder="Buscar por nome ou área…">
+        </div>
+      </div>
+      <div class="alert alert-info" style="margin-top:var(--sp-4)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+        <div><b>Dica</b><p>Use o seletor de missionários em chips (multi-select) no agendamento — evita lista longa de checkboxes.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Badges</h2>
+  <div class="card demo-block">
+    <div class="demo-row">
+      <span class="badge badge-brand">Ativo</span>
+      <span class="badge badge-neutral">Rascunho</span>
+      <span class="badge badge-success"><span class="dot"></span>Confirmado</span>
+      <span class="badge badge-warning"><span class="dot"></span>Últimos 30 dias</span>
+      <span class="badge badge-danger">Bloqueado</span>
+      <span class="badge badge-info">Info</span>
+      <span class="badge badge-male">Élder</span>
+      <span class="badge badge-female">Irmã</span>
+      <span class="badge badge-outline">você</span>
+    </div>
+  </div>
+
+  <h2 class="section-title">Alertas</h2>
+  <div class="grid grid-2">
+    <div class="card demo-block">
+      <div class="alert alert-info" style="margin-bottom:10px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg><div><b>Como funciona o P-Day?</b><p>O dia da semana é bloqueado toda semana. Exceções pontuais sobrescrevem a regra.</p></div></div>
+      <div class="alert alert-warning" style="margin-bottom:10px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg><div><b>Transferência em curso</b><p>A partir de 04/08, o P-Day passa para quarta-feira.</p></div></div>
+    </div>
+    <div class="card demo-block">
+      <div class="alert alert-success" style="margin-bottom:10px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg><div><b>Almoço agendado!</b><p>Família Silva · 12/08 · Elder Oliveira e Irmã Costa.</p></div></div>
+      <div class="alert alert-danger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6"/><path d="M9 9l6 6"/></svg><div><b>Não foi possível salvar</b><p>Já existe um almoço agendado para esta data e família.</p></div></div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Cartões</h2>
+  <div class="grid grid-3">
+    <div class="person">
+      <div class="top">
+        <div class="f-cell"><div class="avatar" style="background:var(--cat-male-100);color:var(--cat-male-600)">EO</div>
+          <div><div class="main">Elder Oliveira</div><span class="badge badge-male" style="margin-top:4px">Élder</span></div>
+        </div>
+        <div class="row-actions">
+          <button class="icon-btn" style="width:34px;height:34px;min-height:34px" aria-label="Editar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button>
+        </div>
+      </div>
+      <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Asa Norte</div>
+      <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>(61) 99999-0001</div>
+      <div>
+        <div style="display:flex;justify-content:space-between;font-size:var(--text-xs);color:var(--text-400);margin-bottom:6px"><span>Progresso da missão</span><b style="color:var(--warning-600)">24 dias restantes</b></div>
+        <div class="progress urgent"><div style="width:82%"></div></div>
+      </div>
+    </div>
+
+    <div class="person">
+      <div class="top">
+        <div class="f-cell"><div class="avatar" style="background:var(--cat-female-100);color:var(--cat-female-600)">MC</div>
+          <div><div class="main">Irmã Costa</div><span class="badge badge-female" style="margin-top:4px">Irmã</span></div>
+        </div>
+        <div class="row-actions">
+          <button class="icon-btn" style="width:34px;height:34px;min-height:34px" aria-label="Editar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button>
+        </div>
+      </div>
+      <div class="meta-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Lago Sul</div>
+      <div>
+        <div style="display:flex;justify-content:space-between;font-size:var(--text-xs);color:var(--text-400);margin-bottom:6px"><span>Progresso da missão</span><b>210 dias restantes</b></div>
+        <div class="progress"><div style="width:35%"></div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 class="blk" style="margin-top:0">Stats (padrão)</h3>
+      <div class="stat" style="margin-bottom:10px">
+        <div class="ico" style="background:var(--brand-100);color:var(--brand-600)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 00-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg></div>
+        <div><div class="val">12</div><div class="lbl">Almoços no mês</div></div>
+      </div>
+      <div class="stat" style="margin-bottom:10px">
+        <div class="ico" style="background:var(--danger-50);color:var(--danger-600)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg></div>
+        <div><div class="val">4</div><div class="lbl">Dias bloqueados</div></div>
+      </div>
+      <div class="stat">
+        <div class="ico" style="background:var(--success-50);color:var(--success-600)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 00-2 2v10h3"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg></div>
+        <div><div class="val">15</div><div class="lbl">Dias livres</div></div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="section-title">Tabela</h2>
+  <div class="card demo-block" style="padding:0;overflow:hidden">
+    <table class="tbl">
+      <thead><tr>
+        <th class="sortable">Data</th><th>Família</th><th>Missionários</th><th>Observações</th><th class="sortable">Status</th><th></th>
+      </tr></thead>
+      <tbody>
+        <tr class="is-today">
+          <td><div class="f-cell"><div><div class="main">12/08/2026</div><div class="sub">Quarta-feira · Hoje</div></div></div></td>
+          <td><div class="f-cell"><div class="avatar" style="background:var(--brand-100);color:var(--brand-700)">FS</div><div><div class="main">Família Silva</div><div class="sub">Irmão João Silva</div></div></div></td>
+          <td><span class="badge badge-male">Elder O.</span> <span class="badge badge-female">Irmã C.</span></td>
+          <td style="color:var(--text-400)">Intolerante à lactose</td>
+          <td><span class="badge badge-success">Agendado</span></td>
+          <td><div class="row-actions"><button class="icon-btn" style="width:34px;height:34px;min-height:34px" aria-label="Editar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button><button class="icon-btn danger" style="width:34px;height:34px;min-height:34px" aria-label="Desativar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18"/></svg></button></div></td>
+        </tr>
+        <tr>
+          <td><div class="f-cell"><div><div class="main">15/08/2026</div><div class="sub">Sábado</div></div></div></td>
+          <td><div class="f-cell"><div class="avatar" style="background:var(--cat-male-100);color:var(--cat-male-600)">SA</div><div><div class="main">Família Almeida</div><div class="sub">Irmã Marta Almeida</div></div></div></td>
+          <td><span class="badge badge-male">Elder R.</span> <span class="badge badge-male">Elder T.</span></td>
+          <td style="color:var(--text-400)">—</td>
+          <td><span class="badge badge-brand">Confirmado</span></td>
+          <td><div class="row-actions"><button class="icon-btn" style="width:34px;height:34px;min-height:34px" aria-label="Editar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button><button class="icon-btn danger" style="width:34px;height:34px;min-height:34px" aria-label="Desativar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18"/></svg></button></div></td>
+        </tr>
+        <tr class="is-past">
+          <td><div class="f-cell"><div><div class="main">05/08/2026</div><div class="sub">Quarta-feira</div></div></div></td>
+          <td><div class="f-cell"><div class="avatar" style="background:var(--cat-female-100);color:var(--cat-female-600)">SO</div><div><div class="main">Família Santos</div><div class="sub">Irmão Paulo Santos</div></div></div></td>
+          <td><span class="badge badge-male">Elder O.</span></td>
+          <td style="color:var(--text-400)">Almoço na chácara</td>
+          <td><span class="badge badge-neutral">Realizado</span></td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section-title">Diálogo destrutivo (padrão de confirmação)</h2>
+  <div class="overlay-demo">
+    <div class="dialog">
+      <div class="d-head">
+        <div style="width:40px;height:40px;border-radius:12px;background:var(--danger-50);display:grid;place-items:center">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--danger-600)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18"/></svg>
+        </div>
+        <div>
+          <div class="t">Desativar Família Silva?</div>
+          <div style="font-size:var(--text-xs);color:var(--text-400)">Irmão João Silva · (61) 99999-0001</div>
+        </div>
+      </div>
+      <div class="d-body">
+        A família não receberá <b>novos almoços</b>, mas os agendamentos já existentes continuam valendo.
+        Ela pode ser reativada depois em <b>Famílias → Mostrar inativas</b>.
+      </div>
+      <div class="d-foot">
+        <button class="btn btn-ghost">Cancelar</button>
+        <button class="btn btn-danger">Desativar família</button>
+      </div>
+    </div>
+  </div>
+  <p class="hint" style="margin-top:10px">Todo destrutivo segue este padrão: <b>título + consequência + ação nomeada + Cancelar</b>. Nunca "Salvar" ou "OK" para desativar.</p>
+
+  <h2 class="section-title">Feedback (toasts) · vazio · carregando</h2>
+  <div class="grid grid-3">
+    <div class="card">
+      <h3 class="blk" style="margin-top:0">Toasts</h3>
+      <div class="toast-stack">
+        <div class="toast success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg><div><b>Almoço agendado!</b><p>Família Silva · 12/08 · Elder Oliveira</p></div></div>
+        <div class="toast error"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6"/><path d="M9 9l6 6"/></svg><div><b>Não foi possível salvar</b><p>Data já possui almoço agendado.</p></div></div>
+        <div class="toast info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg><div><b>Configuração salva</b><p>P-Day alterado para quarta-feira.</p></div></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3 class="blk" style="margin-top:0">Estado vazio</h3>
+      <div class="empty">
+        <div class="e-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 00-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg></div>
+        <b>Nenhum almoço encontrado</b>
+        <p>Comece agendando o primeiro almoço da escala.</p>
+        <button class="btn btn-primary">Agendar almoço</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3 class="blk" style="margin-top:0">Carregando (skeleton)</h3>
+      <div class="skel-card"><div class="skel" style="width:60%;height:16px"></div><div class="skel" style="width:90%;height:12px"></div><div class="skel" style="width:70%;height:12px"></div></div>
+      <div class="skel-card" style="margin-top:10px"><div class="skel" style="width:50%;height:16px"></div><div class="skel" style="width:80%;height:12px"></div><div class="skel" style="width:65%;height:12px"></div></div>
+      <p class="hint" style="margin-top:10px">Skeleton para conteúdo; spinner apenas em botões/ações pontuais.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     TELAS
+================================================================= -->
+<section class="view" id="view-screens">
+
+  <h2 class="section-title">Shell do app (desktop)</h2>
+  <p class="section-sub">Sidebar de 224px com seções rotuladas; página = header (título + contagem + ação primária) + stats + conteúdo. O fundo é <code>canvas</code> — nunca <code>surface</code> — para os cards "flutuarem".</p>
+
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand"><div class="logo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 00-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg></div><div><b>Almoço dos</b><b>Missionários</b></div></div>
+      <div class="nav-sec">Principal</div>
+      <div class="nav-item on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>Calendário</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>Missionários</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>Famílias</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Almoços</div>
+      <div class="nav-sec">Configurações</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 00-2 2v.18a2 2 0 01-1 1.73l-.43.25a2 2 0 01-2 0l-.15-.08a2 2 0 00-2.73.73l-.22.38a2 2 0 00.73 2.73l.15.1a2 2 0 011 1.72v.51a2 2 0 01-1 1.74l-.15.09a2 2 0 00-.73 2.73l.22.38a2 2 0 002.73.73l.15-.08a2 2 0 012 0l.43.25a2 2 0 011 1.73V20a2 2 0 002 2h.44a2 2 0 002-2v-.18a2 2 0 011-1.73l.43-.25a2 2 0 012 0l.15.08a2 2 0 002.73-.73l.22-.39a2 2 0 00-.73-2.73l-.15-.08a2 2 0 01-1-1.74v-.5a2 2 0 011-1.74l.15-.09a2 2 0 00.73-2.73l-.22-.38a2 2 0 00-2.73-.73l-.15.08a2 2 0 01-2 0l-.43-.25a2 2 0 01-1-1.73V4a2 2 0 00-2-2z"/><circle cx="12" cy="12" r="3"/></svg>P-Day</div>
+      <div class="foot">
+        <div class="avatar">IR</div>
+        <div class="who"><b>Irmã Roberta Lima</b><span>Coordenadora</span></div>
+        <button class="icon-btn" style="color:rgba(255,255,255,.6);width:34px;height:34px;min-height:34px" title="Refazer tutorial"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg></button>
+        <button class="icon-btn" style="color:rgba(255,255,255,.6);width:34px;height:34px;min-height:34px" title="Sair"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg></button>
+      </div>
+    </aside>
+
+    <div class="shell-main">
+      <div class="shell-head">
+        <div><h2>Calendário de almoços</h2><p>Agosto de 2026 · 12 almoços agendados</p></div>
+        <div style="display:flex;gap:10px">
+          <button class="btn btn-outline btn-sm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>Exportar PDF</button>
+          <button class="btn btn-primary btn-sm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>Novo almoço</button>
+        </div>
+      </div>
+      <div class="shell-body">
+        <div class="cal">
+          <div class="cal-top">
+            <button class="icon-btn" style="width:32px;height:32px;min-height:32px" aria-label="Mês anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+            <span class="c-title">Agosto de 2026</span>
+            <div style="display:flex;gap:6px">
+              <button class="icon-btn" style="width:32px;height:32px;min-height:32px" aria-label="Hoje">Hoje</button>
+              <button class="icon-btn" style="width:32px;height:32px;min-height:32px" aria-label="Próximo mês"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
+              <div class="seg"><button>Mês</button><button class="on">Semana</button></div>
+            </div>
+          </div>
+          <div class="cal-grid">
+            <div class="cal-dow">Dom</div><div class="cal-dow pday">Seg</div><div class="cal-dow">Ter</div><div class="cal-dow">Qua</div><div class="cal-dow">Qui</div><div class="cal-dow">Sex</div><div class="cal-dow">Sáb</div>
+            <div class="day other"><div class="num">27</div></div><div class="day other"><div class="num">28</div></div><div class="day other"><div class="num">29</div></div><div class="day other"><div class="num">30</div></div><div class="day other"><div class="num">31</div></div>
+            <div class="day"><div class="num">1</div><span class="lunch-chip">Família Silva</span></div>
+            <div class="day blocked"><div class="num">2</div></div>
+            <div class="day"><div class="num">3</div><span class="lunch-chip">Família Almeida</span><span class="lunch-chip free">Família Santos</span></div>
+            <div class="day"><div class="num">4</div><span class="lunch-chip">Família Souza</span></div>
+            <div class="day"><div class="num">5</div></div><div class="day"><div class="num">6</div></div>
+            <div class="day"><div class="num">7</div><span class="lunch-chip">Família Rocha</span></div>
+            <div class="day blocked"><div class="num">8</div></div>
+            <div class="day"><div class="num">9</div></div><div class="day"><div class="num">10</div></div>
+            <div class="day"><div class="num">11</div><span class="lunch-chip free">Família Mendes</span></div>
+            <div class="day today"><div class="num">12</div><span class="lunch-chip">Família Silva</span></div>
+            <div class="day"><div class="num">13</div></div>
+            <div class="day"><div class="num">14</div><span class="lunch-chip">Família Lima</span></div>
+            <div class="day blocked"><div class="num">15</div></div>
+            <div class="day"><div class="num">16</div></div><div class="day"><div class="num">17</div></div>
+            <div class="day"><div class="num">18</div><span class="lunch-chip">Família Almeida</span></div>
+            <div class="day"><div class="num">19</div></div>
+            <div class="day"><div class="num">20</div><span class="lunch-chip free">Família Souza</span><span class="more-chip">+1</span></div>
+            <div class="day"><div class="num">21</div></div>
+            <div class="day blocked"><div class="num">22</div></div>
+            <div class="day"><div class="num">23</div></div><div class="day"><div class="num">24</div></div>
+            <div class="day"><div class="num">25</div><span class="lunch-chip">Família Rocha</span></div>
+            <div class="day"><div class="num">26</div></div>
+            <div class="day"><div class="num">27</div></div><div class="day"><div class="num">28</div></div>
+            <div class="day blocked"><div class="num">29</div></div>
+            <div class="day"><div class="num">30</div></div><div class="day other"><div class="num">1</div></div><div class="day other"><div class="num">2</div></div>
+          </div>
+        </div>
+        <div class="upcoming-panel">
+          <div class="up-head">Próximos almoços</div>
+          <div class="up-body">
+            <div class="upcoming"><div class="date">QUA · 12/08</div><div class="fam">Família Silva</div><div class="mis">Elder Oliveira · Irmã Costa</div></div>
+            <div class="upcoming"><div class="date">SEX · 14/08</div><div class="fam">Família Lima</div><div class="mis">Elder Souza</div></div>
+            <div class="upcoming"><div class="date">TER · 18/08</div><div class="fam">Família Almeida</div><div class="mis">Elder Tavares · Elder Ramos</div></div>
+            <div class="upcoming"><div class="date">QUI · 20/08</div><div class="fam">Família Souza</div><div class="mis">Irmã Costa · Elder Oliveira</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="section-title" style="margin-top:var(--sp-16)">Mobile (375px) — bottom nav + cards</h2>
+  <p class="section-sub">No celular, a sidebar vira barra inferior com os 4 itens principais; "Configurações" e "Administração" entram no item "Mais". Cards empilham e tabelas viram listas.</p>
+
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="p-head">
+      <div><h4>Calendário</h4><div style="font-size:var(--text-xs);color:var(--text-400)">Agosto · 12 almoços</div></div>
+      <button class="btn btn-primary btn-sm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>Novo</button>
+    </div>
+    <div class="p-body">
+      <div class="stat">
+        <div class="ico" style="background:var(--brand-100);color:var(--brand-600)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 00-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg></div>
+        <div><div class="val">12</div><div class="lbl">Almoços no mês</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="stat" style="flex-direction:column;align-items:flex-start;gap:6px;padding:14px">
+          <div class="ico" style="background:var(--danger-50);color:var(--danger-600);width:36px;height:36px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg></div>
+          <div><div class="val" style="font-size:1.25rem">4</div><div class="lbl">Dias bloqueados</div></div>
+        </div>
+        <div class="stat" style="flex-direction:column;align-items:flex-start;gap:6px;padding:14px">
+          <div class="ico" style="background:var(--success-50);color:var(--success-600);width:36px;height:36px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 00-2 2v10h3"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg></div>
+          <div><div class="val" style="font-size:1.25rem">15</div><div class="lbl">Dias livres</div></div>
+        </div>
+      </div>
+      <div class="upcoming" style="background:var(--surface)"><div class="date">HOJE · QUA 12/08</div><div class="fam">Família Silva</div><div class="mis">Elder Oliveira · Irmã Costa · observação: intolerante à lactose</div></div>
+      <div class="upcoming" style="background:var(--surface)"><div class="date">SEX · 14/08</div><div class="fam">Família Lima</div><div class="mis">Elder Souza</div></div>
+      <button class="btn btn-outline btn-block" style="margin-top:auto">Ver todos os almoços</button>
+    </div>
+    <div class="bottom-nav">
+      <div class="bn on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>Calendário</div>
+      <div class="bn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>Missionários</div>
+      <div class="bn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>Famílias</div>
+      <div class="bn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Almoços</div>
+      <div class="bn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33h.01a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51h.01a1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82v.01a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Mais</div>
+    </div>
+  </div>
+
+  <h2 class="section-title" style="margin-top:var(--sp-16)">Login (proposta)</h2>
+  <p class="section-sub">Metade "brand" com paleta em camadas + formulário em surface. Métricas foram removidas — nada de números inventados. Espaço para a citação fica.</p>
+  <div class="shell" style="min-height:560px">
+    <div style="flex:1;background:linear-gradient(135deg,var(--brand-900) 0%,var(--brand-700) 100%);color:#fff;padding:48px;display:none;flex-direction:column;justify-content:space-between">
+      <div style="display:flex;gap:10px;align-items:center"><div class="logo" style="width:40px;height:40px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 00-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg></div><b style="font-size:1rem">Almoço dos Missionários</b></div>
+      <blockquote style="font-size:1.4rem;font-weight:300;font-style:italic;line-height:1.5;color:rgba(255,255,255,.85);max-width:26ch">"Quem quiser ser o primeiro entre vós, seja servo de todos."</blockquote>
+      <p style="color:rgba(255,255,255,.45);font-size:var(--text-sm)">Marcos 10:44</p>
+    </div>
+    <div style="flex:1;display:grid;place-items:center;background:var(--surface);padding:32px">
+      <div style="width:100%;max-width:340px">
+        <h2 style="font-size:var(--text-display);margin-bottom:6px">Bem-vindo de volta</h2>
+        <p style="color:var(--text-500);font-size:var(--text-sm);margin-bottom:28px">Acesse sua conta para continuar</p>
+        <div class="field"><label for="lg-em">E-mail</label><input id="lg-em" class="input" placeholder="coordenador@igreja.com" style="height:48px;min-height:48px"></div>
+        <div class="field"><label for="lg-pw">Senha</label><input id="lg-pw" type="password" class="input" placeholder="••••••••" style="height:48px;min-height:48px"></div>
+        <button class="btn btn-primary btn-lg btn-block" style="margin-top:8px">Entrar</button>
+        <p class="hint" style="text-align:center;margin-top:16px">Contas são criadas por um administrador da ala.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     FLUXOS DO COORDENADOR (polimento)
+================================================================= -->
+<section class="view" id="view-flows">
+
+  <h2 class="section-title">Fluxos do coordenador — polimento</h2>
+  <p class="section-sub">Crítica do DS pela ótica de quem usa todo dia. Os três fluxos centrais (almoço, missionário, P-Day) ganham: <b>calendário como superfície principal</b> com sinais de rotação, <b>agendamento com defaults inteligentes</b> e <b>assistente guiado para a semana de transferência</b> — hoje o cenário mais crítico, que exige 3 modais separados e o conhecimento implícito de que "exceção vence configuração".</p>
+
+  <h3 class="blk">A · Agendar almoço — defaults inteligentes</h3>
+  <div class="grid grid-2">
+    <div>
+      <div class="overlay-demo">
+        <div class="dialog" style="max-width:460px">
+          <div class="d-head">
+            <div style="width:40px;height:40px;border-radius:12px;background:var(--brand-100);display:grid;place-items:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--brand-600)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 00-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg></div>
+            <div><div class="t">Agendar almoço</div><div style="font-size:var(--text-xs);color:var(--text-400)">Sugestão: próxima terça livre</div></div>
+          </div>
+          <div class="d-body" style="display:flex;flex-direction:column;gap:16px">
+            <div>
+              <div class="field" style="margin-bottom:6px"><label>Data</label></div>
+              <div class="date-strip">
+                <div class="date-chip on"><span class="wd">Seg</span><span class="dy">17</span></div>
+                <div class="date-chip"><span class="wd">Ter</span><span class="dy">18</span></div>
+                <div class="date-chip"><span class="wd">Qui</span><span class="dy">20</span></div>
+                <div class="date-chip"><span class="wd">Sex</span><span class="dy">21</span></div>
+              </div>
+              <span class="hint">P-Day (seg 10) e datas já ocupadas foram pulados automaticamente.</span>
+            </div>
+            <div>
+              <div class="field" style="margin-bottom:6px"><label>Família responsável</label></div>
+              <div class="fam-row on"><div class="avatar" style="background:var(--brand-100);color:var(--brand-700)">FL</div><span class="f-name">Família Lima</span><span class="badge badge-success">0x este mês</span></div>
+              <div class="fam-row"><div class="avatar" style="background:var(--cat-male-100);color:var(--cat-male-600)">FS</div><span class="f-name">Família Silva</span><span class="badge badge-warning">2x este mês</span></div>
+              <div class="fam-row"><div class="avatar" style="background:var(--cat-female-100);color:var(--cat-female-600)">SA</div><span class="f-name">Família Almeida</span><span class="badge badge-warning">1x este mês</span></div>
+              <span class="hint">Ordenadas das menos usadas — a rotação acontece sozinha.</span>
+            </div>
+            <div>
+              <div class="field" style="margin-bottom:6px"><label>Missionários presentes</label></div>
+              <div class="demo-row" style="margin-bottom:4px">
+                <span class="badge badge-male">Elder Oliveira</span>
+                <span class="badge badge-female">Irmã Costa</span>
+              </div>
+              <a class="hint">↻ Usar mesmo par da última vez</a>
+            </div>
+          </div>
+          <div class="d-foot">
+            <button class="btn btn-ghost">Cancelar</button>
+            <button class="btn btn-primary">Agendar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3 class="blk" style="margin-top:0">Por que melhora a experiência</h3>
+      <div class="do">Data já vem no <b>próximo dia livre</b> — um clique a menos e evita o erro de agendar em P-Day</div>
+      <div class="do">Família sugerida = <b>menos usada do mês</b> → escala justa sem contar na cabeça</div>
+      <div class="do"><b>Último par preservado</b> → companhia quase sempre almoça junta</div>
+      <div class="dont">Dropdown "Selecione..." sem contexto → rotação manual e famílias repetidas no mês</div>
+      <div class="dont">Campos zerados exigindo digitação quando o padrão da ala se repete</div>
+    </div>
+  </div>
+
+  <h3 class="blk">B · Semana de transferência — 1 ação em vez de 3 modais</h3>
+  <p class="section-sub">Hoje o coordenador abre modais separados para nova config, liberar a segunda e bloquear a quarta. O polimento proposto é um assistente de 2 passos que cria tudo de uma vez.</p>
+  <div class="grid grid-2">
+    <div class="wizard">
+      <div class="w-head">
+        <div class="steps"><div class="st on"><span class="n">1</span> Escolha a semana</div><div class="bar"></div><div class="st"><span class="n">2</span> Confirme as mudanças</div></div>
+      </div>
+      <div class="w-body">
+        <div class="grid" style="grid-template-columns:1fr 1fr;gap:8px">
+          <div class="week-card on"><div class="wk">Semana 33</div><div class="range">10 – 16 ago</div><span class="badge badge-neutral">P-Day: seg</span></div>
+          <div class="week-card"><div class="wk">Semana 34</div><div class="range">17 – 23 ago</div><span class="badge badge-neutral">P-Day: seg</span></div>
+        </div>
+        <div class="chg chg-unlock" style="margin-top:14px"><div class="sw" style="background:var(--success-100)">SEG</div><span><span class="from">bloqueada (P-Day)</span> <span class="arr">→</span> <span class="to">liberada</span></span></div>
+        <div class="chg chg-lock"><div class="sw" style="background:var(--danger-100)">QUA</div><span><span class="from">livre</span> <span class="arr">→</span> <span class="to">bloqueada</span></span></div>
+        <div class="field" style="margin-bottom:6px"><label>Motivo</label><input class="input" value="Semana de transferência — agosto 2026"></div>
+        <button class="btn btn-primary btn-block" style="margin-top:8px">Aplicar mudanças</button>
+        <span class="hint" style="display:block;text-align:center;margin-top:8px">Cria a nova configuração + 2 exceções em uma única ação.</span>
+      </div>
+    </div>
+    <div class="card">
+      <h3 class="blk" style="margin-top:0">Por que melhora a experiência</h3>
+      <div class="do">Fluxo orientado a <b>tarefa</b>, não a entidade (config × exceção separados)</div>
+      <div class="do">Resumo legível das <b>consequências antes de aplicar</b> — sem surpresa no calendário</div>
+      <div class="do">Motivo pré-preenchido → <b>histórico auditável</b> (quando/quem/porquê)</div>
+      <div class="dont">"Nova configuração", "Liberar data" e "Bloquear data" em telas distintas, exigindo entender a regra "exceção vence configuração"</div>
+      <div class="dont">Mesmo cenário repetido todo ciclo de transferência exigindo 3 idas ao modal</div>
+    </div>
+  </div>
+
+  <h3 class="blk">C · Calendário como superfície principal (sinais de contexto)</h3>
+  <p class="section-sub">O coordenador vive no calendário. Polimento: número da semana, badge de rotação (família com 2+ almoços no mês) e banner da semana de transferência com acesso ao assistente.</p>
+  <div class="grid grid-2">
+    <div>
+      <div class="cal" style="max-width:540px">
+        <div class="transfer-banner">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          <b>Semana de transferência: 10–16 ago</b><button>Ver mudanças</button>
+        </div>
+        <div class="cal-top">
+          <button class="icon-btn" style="width:32px;height:32px;min-height:32px" aria-label="Mês anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+          <span class="c-title">Agosto de 2026</span>
+          <div class="seg"><button>Mês</button><button class="on">Semana</button></div>
+        </div>
+        <div class="cal-grid">
+          <div class="cal-dow">Dom</div><div class="cal-dow pday">Seg</div><div class="cal-dow">Ter</div><div class="cal-dow">Qua</div><div class="cal-dow">Qui</div><div class="cal-dow">Sex</div><div class="cal-dow">Sáb</div>
+          <div class="day liberated"><span class="weeknum">32</span><div class="num">10</div></div>
+          <div class="day"><span class="weeknum">32</span><div class="num">11</div><span class="lunch-chip">Família Souza</span></div>
+          <div class="day blocked"><span class="weeknum">32</span><div class="num">12</div></div>
+          <div class="day"><span class="weeknum">32</span><div class="num">13</div><span class="lunch-chip">Família Silva <span class="rot-badge">2x</span></span></div>
+          <div class="day"><span class="weeknum">32</span><div class="num">14</div></div>
+          <div class="day"><span class="weeknum">32</span><div class="num">15</div></div>
+          <div class="day"><span class="weeknum">32</span><div class="num">16</div></div>
+          <div class="day blocked"><span class="weeknum">33</span><div class="num">17</div></div>
+          <div class="day"><span class="weeknum">33</span><div class="num">18</div><span class="lunch-chip">Família Souza</span></div>
+          <div class="day"><span class="weeknum">33</span><div class="num">19</div></div>
+          <div class="day"><span class="weeknum">33</span><div class="num">20</div><span class="lunch-chip">Família Mendes</span></div>
+          <div class="day"><span class="weeknum">33</span><div class="num">21</div></div>
+          <div class="day"><span class="weeknum">33</span><div class="num">22</div></div>
+          <div class="day"><span class="weeknum">33</span><div class="num">23</div></div>
+        </div>
+      </div>
+      <p class="hint" style="margin-top:8px">Segunda 10 <b>liberada</b> (azul claro) e quarta 12 <b>bloqueada</b> — resultado do assistente B, visível de imediato.</p>
+    </div>
+    <div class="card">
+      <h3 class="blk" style="margin-top:0">Sinais que o DS deve oferecer</h3>
+      <div class="do"><b>rot-badge</b> — família com 2+ almoços no mês em âmbar (justiça na escala) </div>
+      <div class="do"><b>Número da semana</b> — referência para "na semana 33 o P-Day muda"</div>
+      <div class="do"><b>Banner</b> da transferência com atalho direto para o assistente</div>
+      <div class="do">Exceção liberada em <b>azul claro</b> (visual já usado no app) para diferenciar de bloqueio</div>
+      <div class="dont">Hoje a duplicação de família só é percebida conferindo datas manualmente</div>
+    </div>
+  </div>
+
+  <h3 class="blk">D · P-Day com preview ao vivo</h3>
+  <p class="section-sub">Antes de salvar a config, o coordenador vê o mês com a regra aplicada — elimina a surpresa de "esqueci que segunda é P-Day".</p>
+  <div class="grid grid-2">
+    <div class="card">
+      <div class="field"><label>Novo dia do P-Day</label>
+        <div class="seg">
+          <button>Dom</button><button class="on">Seg</button><button>Ter</button><button>Qua</button><button>Qui</button><button>Sex</button><button>Sáb</button>
+        </div>
+      </div>
+      <div class="mini-cal" style="margin-top:12px">
+        <div class="mh">Dom</div><div class="mh">Seg</div><div class="mh">Ter</div><div class="mh">Qua</div><div class="mh">Qui</div><div class="mh">Sex</div><div class="mh">Sáb</div>
+        <div class="mc">26</div><div class="mc block">27</div><div class="mc">28</div><div class="mc">29</div><div class="mc">30</div><div class="mc">31</div><div class="mc">1</div>
+        <div class="mc">2</div><div class="mc block">3</div><div class="mc">4</div><div class="mc">5</div><div class="mc">6</div><div class="mc">7</div><div class="mc">8</div>
+        <div class="mc">9</div><div class="mc block">10</div><div class="mc">11</div><div class="mc">12</div><div class="mc">13</div><div class="mc">14</div><div class="mc">15</div>
+        <div class="mc">16</div><div class="mc block">17</div><div class="mc">18</div><div class="mc">19</div><div class="mc">20</div><div class="mc">21</div><div class="mc">22</div>
+        <div class="mc">23</div><div class="mc block">24</div><div class="mc">25</div><div class="mc">26</div><div class="mc">27</div><div class="mc">28</div><div class="mc">29</div>
+        <div class="mc">30</div><div class="mc block">31</div><div class="mc">1</div><div class="mc">2</div><div class="mc">3</div><div class="mc">4</div><div class="mc">5</div>
+      </div>
+      <div class="demo-row" style="margin-top:10px">
+        <span class="badge badge-danger">P-Day: seg</span>
+        <span class="badge badge-brand">exceção: seg 10 liberada</span>
+        <span class="badge badge-danger">exceção: qua 12 bloqueada</span>
+      </div>
+      <p class="hint">Segunda 10 exibida como exceção liberada — a prévia já reflete a semana de transferência.</p>
+    </div>
+    <div class="card">
+      <h3 class="blk" style="margin-top:0">Por que melhora a experiência</h3>
+      <div class="do">Confirmação <b>WYSIWYG</b>: o que você vê é o que será o calendário</div>
+      <div class="do">Exceções já aparecem na prévia → o coordenador valida a regra "exceção vence" sem ler a documentação</div>
+      <div class="do">Um único componente de <b>mini-calendário</b> reutilizável em config, agendamento e relatório</div>
+      <div class="dont">Formulário que salva e só então mostra o resultado no calendário grande</div>
+    </div>
+  </div>
+
+  <h3 class="blk">E · Feedback reversível — Desfazer</h3>
+  <div class="grid grid-2">
+    <div class="card">
+      <div class="toast-stack">
+        <div class="toast reversible" style="border-left-color:var(--warning-600)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+          <div class="t-body"><b>Família Silva desativada</b><p>Sem novos almoços a partir de hoje. Dados preservados.</p></div>
+          <button class="undo-btn">Desfazer</button>
+        </div>
+        <div class="toast success">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+          <div class="t-body"><b>Almoço agendado!</b><p>Família Lima · 17/08 · Elder Oliveira e Irmã Costa.</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3 class="blk" style="margin-top:0">Por que melhora a experiência</h3>
+      <div class="do">Ação destrutiva leve (desativar) ganha <b>janela de reversão</b> — hoje é irreversível na UI</div>
+      <div class="do">Consequência escrita no toast reforça o que mudou ("Sem novos almoços")</div>
+      <div class="do">Padrão já presente no DS para o diálogo destrutivo <b>pesado</b> (ex.: remover usuário)</div>
+      <div class="dont">Clique na lixeira → operação irreversível sem confirmação (estado atual)</div>
+    </div>
+  </div>
+
+  <h3 class="blk">F · Prioridade de implementação</h3>
+  <p class="section-sub">Validação do que entrega mais valor por esforço — tudo usa componentes/tokens já definidos no DS.</p>
+  <div class="prio p0"><span class="p-tag">P0</span><div><b>Defaults inteligentes no agendamento</b><p>Próximo dia livre + família menos usada + último par de missionários. Custo baixo, elimina os erros diários.</p></div></div>
+  <div class="prio p0"><span class="p-tag">P0</span><div><b>Desfazer em desativações</b><p>Toast com ação reversível (componente E) aplicado a famílias, missionários e usuários.</p></div></div>
+  <div class="prio p1"><span class="p-tag">P1</span><div><b>Assistente "Semana de transferência"</b><p>Um fluxo guiado substituindo os 3 modais; é a maior fonte de erro do dia a dia.</p></div></div>
+  <div class="prio p1"><span class="p-tag">P1</span><div><b>Sinais de contexto no calendário</b><p>Badge de rotação, número da semana e banner de transferência — zero fricção para enxergar a escala.</p></div></div>
+  <div class="prio p1"><span class="p-tag">P1</span><div><b>Preview ao vivo na config de P-Day</b><p>Mini-calendário reutilizável aplicando a regra + exceções antes de salvar.</p></div></div>
+  <div class="prio p2"><span class="p-tag">P2</span><div><b>Compartilhar escala no WhatsApp</b><p>PDF pronto para o grupo da ala direto do painel de próximos almoços.</p></div></div>
+  <div class="prio p2"><span class="p-tag">P2</span><div><b>Navegação por teclado no calendário</b><p>Setas para mover entre dias, aria-live no dia selecionado — acessibilidade e velocidade.</p></div></div>
+</section>
+
+<script>
+  var views = ['tokens', 'components', 'screens', 'flows'];
+  function show(v) {
+    document.querySelectorAll('.tabs button').forEach(function(x){ x.classList.toggle('on', x.dataset.v === v) });
+    document.querySelectorAll('.view').forEach(function(x){ x.classList.toggle('on', x.id === 'view-' + v) });
+    window.scrollTo(0, 0);
+    if (location.hash !== '#' + v) history.replaceState(null, '', '#' + v);
+  }
+  document.getElementById('tabs').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    show(b.dataset.v);
+  });
+  window.addEventListener('hashchange', function () {
+    var v = (location.hash || '').replace('#', '');
+    if (views.indexOf(v) !== -1) show(v);
+  });
+  var initial = (location.hash || '').replace('#', '');
+  if (views.indexOf(initial) === -1) initial = 'tokens';
+  show(initial);
+</script>
+</body>
+</html>

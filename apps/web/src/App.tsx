@@ -4,11 +4,13 @@ import { Toaster } from 'sonner'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClient } from '@/lib/queryClient'
 import { AppLayout } from '@/components/layout/AppLayout'
+import { RequireRole } from '@/components/layout/RequireRole'
 import { Dashboard } from '@/pages/Dashboard'
 import { MissionariesPage } from '@/pages/missionaries/Missionaries'
 import { FamiliesPage } from '@/pages/families/Families'
 import { LunchesPage } from '@/pages/lunches/Lunches'
 import { PdayPage } from '@/pages/pday/Pday'
+import { UsersPage } from '@/pages/users/Users'
 import { LoginPage } from '@/pages/auth/LoginPage.tsx'
 
 export default function App() {
@@ -23,6 +25,7 @@ export default function App() {
             <Route path="/families" element={<FamiliesPage />} />
             <Route path="/lunches" element={<LunchesPage />} />
             <Route path="/pday" element={<PdayPage />} />
+            <Route path="/users" element={<RequireRole role="ADMIN"><UsersPage /></RequireRole>} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

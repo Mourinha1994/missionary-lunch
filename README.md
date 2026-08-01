@@ -87,8 +87,20 @@ Copie `.env.example` para `.env` em `apps/api` e preencha:
 cd apps/api
 npm install
 npx prisma db push        # sincroniza o schema com o banco (cria as collections)
+npm run db:seed           # (opcional) dados de demonstração: famílias, missionários, almoços e troca de P-Day
 npm run start:dev         # http://localhost:3000/api
 ```
+
+O seed é **idempotente** (pode rodar várias vezes) e cria usuários de acesso demo:
+
+| Papel | E-mail | Senha |
+|---|---|---|
+| ADMIN | `admin@missionarylunch.com` | `6UETYr1xpb7P` |
+| COORDENADOR | `coord.demo@igreja.com` | `Demo@2026` |
+
+Além de famílias, missionários e almoços, o seed cria uma **troca de P-Day por transferência** em uma semana futura (segunda liberada e quarta bloqueada), para demonstrar o recurso de exceções no calendário.
+
+> Alterne as senhas em produção. O código do seed fica em `apps/api/prisma/seed.ts`.
 
 A documentação interativa da API fica em **http://localhost:3000/api/docs**.
 
@@ -113,6 +125,7 @@ npm run dev               # http://localhost:5173
 | api | `npm run lint` | Lint (ESLint + Prettier) |
 | api | `npm test` | Testes unitários (Jest) |
 | api | `npx prisma db push` | Sincroniza o schema no banco |
+| api | `npm run db:seed` | Seed de demonstração (idempotente) |
 | web | `npm run dev` | Sobe em watch mode |
 | web | `npm run build` | Build de produção (`dist/`) |
 | web | `npm run lint` | Lint (ESLint) |
@@ -150,14 +163,29 @@ npm run dev               # http://localhost:5173
 
 ## 🛣️ Roadmap (MVP)
 
-- [ ] Aplicação de papéis (ADMIN/COORDINATOR) nas rotas e na interface
-- [ ] Gestão de usuários (criação, convite, alteração de papel)
-- [ ] Validações de integridade (almoço duplicado no dia, referências inativas)
-- [ ] Seed de demonstração com dados realistas
-- [ ] Dashboard com métricas reais e exportação da escala semanal
+- [x] Aplicação de papéis (ADMIN/COORDINATOR) nas rotas e na interface
+- [x] Gestão de usuários (criação, convite, alteração de papel)
+- [x] Validações de integridade (almoço duplicado no dia, referências inativas)
+- [x] Seed de demonstração com dados realistas
+- [x] Tutorial de boas-vindas (onboarding) com replay pelo menu lateral
+- [x] Dashboard com métricas reais e exportação da escala semanal
+
+---
+
+---
+
+## 🔀 Fluxo de desenvolvimento (Git Flow)
+
+O projeto segue o modelo de branching **Git Flow** com **Conventional Commits**:
+
+- `main` — produção; `develop` — integração (branch padrão)
+- Features em `feature/*` (a partir de `develop`), releases em `release/*`, hotfixes em `hotfix/*` (a partir de `main`)
+- Toda mudança entra por **Pull Request** para `develop`/`main` — nunca commit direto
+
+Regras completas, templates de PR e convenção de commits: **[CONTRIBUTING.md](CONTRIBUTING.md)**
 
 ---
 
 ## 📄 Licença
 
-Projeto privado — uso interno da coordenação de missionários da igreja.
+Distribuído sob a licença **MIT**. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.

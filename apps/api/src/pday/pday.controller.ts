@@ -18,6 +18,7 @@ import {
 import { PdayService } from './pday.service';
 import { CreatePdayConfigDto } from './dto/create-pday-config.dto';
 import { CreatePdayExceptionDto } from './dto/create-pday-exception.dto';
+import { CreateTransferWeekDto } from './dto/create-transfer-week.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @ApiTags('pday')
@@ -61,6 +62,15 @@ export class PdayController {
   })
   createConfig(@Body() dto: CreatePdayConfigDto) {
     return this.pdayService.create(dto);
+  }
+
+  @Post('transfer-week')
+  @ApiOperation({
+    summary:
+      'Prepara a semana de transferência: libera o P-Day vigente e bloqueia o novo dia naquela semana (transação)',
+  })
+  createTransferWeek(@Body() dto: CreateTransferWeekDto) {
+    return this.pdayService.createTransferWeek(dto);
   }
 
   @Get('exceptions')
