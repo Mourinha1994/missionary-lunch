@@ -37,12 +37,12 @@ type FormData = z.infer<typeof schema>
 
 function RoleBadge({ role }: { role: Role }) {
     return role === 'ADMIN' ? (
-        <Badge className="bg-violet-100 text-violet-700 hover:bg-violet-100 gap-1">
+        <Badge variant="brand" className="gap-1">
             <ShieldCheck className="w-3 h-3" />
             {ROLE_LABEL.ADMIN}
         </Badge>
     ) : (
-        <Badge variant="secondary">{ROLE_LABEL.COORDINATOR}</Badge>
+        <Badge variant="neutral">{ROLE_LABEL.COORDINATOR}</Badge>
     )
 }
 
@@ -91,8 +91,8 @@ function UserFormModal({
             <DialogContent className="sm:max-w-lg">
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
-                        <div className="w-7 h-7 bg-violet-100 rounded-lg flex items-center justify-center">
-                            <Users className="w-4 h-4 text-violet-600" />
+                        <div className="w-7 h-7 bg-brand-100 rounded-lg grid place-items-center">
+                            <Users className="w-4 h-4 text-brand-600" />
                         </div>
                         {isEditing ? 'Editar usuário' : 'Novo usuário'}
                     </DialogTitle>
@@ -103,19 +103,19 @@ function UserFormModal({
                         <div className="col-span-2 space-y-1.5">
                             <Label>Nome</Label>
                             <Input placeholder="ex: João Coordenador" {...register('name')} />
-                            {errors.name && <p className="text-xs text-red-500">{errors.name.message}</p>}
+                            {errors.name && <p className="text-xs text-danger-600">{errors.name.message}</p>}
                         </div>
 
                         <div className="col-span-2 space-y-1.5">
                             <Label>E-mail</Label>
                             <Input type="email" placeholder="usuario@igreja.com" {...register('email')} />
-                            {errors.email && <p className="text-xs text-red-500">{errors.email.message}</p>}
+                            {errors.email && <p className="text-xs text-danger-600">{errors.email.message}</p>}
                         </div>
 
                         <div className="col-span-2 space-y-1.5">
-                            <Label>{isEditing ? 'Senha ' : 'Senha '}<span className="text-slate-400 font-normal">({isEditing ? 'deixe em branco para manter' : 'mínimo 6 caracteres'})</span></Label>
+                            <Label>{isEditing ? 'Senha ' : 'Senha '}<span className="text-text-400 font-normal">({isEditing ? 'deixe em branco para manter' : 'mínimo 6 caracteres'})</span></Label>
                             <Input type="password" placeholder={isEditing ? '••••••' : 'Nova senha'} {...register('password')} />
-                            {errors.password && <p className="text-xs text-red-500">{errors.password.message}</p>}
+                            {errors.password && <p className="text-xs text-danger-600">{errors.password.message}</p>}
                         </div>
 
                         <div className="col-span-2 space-y-1.5">
@@ -129,13 +129,13 @@ function UserFormModal({
                                     <SelectItem value="COORDINATOR">Coordenador</SelectItem>
                                 </SelectContent>
                             </Select>
-                            {errors.role && <p className="text-xs text-red-500">{errors.role.message}</p>}
+                            {errors.role && <p className="text-xs text-danger-600">{errors.role.message}</p>}
                         </div>
                     </div>
 
                     <DialogFooter className="pt-2">
-                        <Button type="button" variant="outline" onClick={onClose}>Cancelar</Button>
-                        <Button type="submit" disabled={createUser.isPending || updateUser.isPending} className="bg-violet-600 hover:bg-violet-700">
+                        <Button type="button" variant="ghost" onClick={onClose}>Cancelar</Button>
+                        <Button type="submit" disabled={createUser.isPending || updateUser.isPending}>
                             {(createUser.isPending || updateUser.isPending) && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
                             {isEditing ? 'Salvar alterações' : 'Cadastrar usuário'}
                         </Button>
@@ -174,32 +174,30 @@ export function UsersPage() {
     const handleClose = () => { setModalOpen(false); setSelected(null) }
 
     return (
-        <div className="flex flex-col h-full bg-slate-50">
+        <div className="flex flex-col h-full">
             {/* Header */}
-            <div className="bg-white border-b border-slate-200 px-6 py-4 shrink-0">
-                <div className="flex items-center justify-between">
-                    <div>
-                        <h1 className="text-lg font-semibold text-slate-900">Usuários</h1>
-                        <p className="text-sm text-slate-500 mt-0.5">
-                            {users.length} usuário{users.length !== 1 ? 's cadastrado' : ' cadastrado'}
-                        </p>
-                    </div>
-                    <Button onClick={() => { setSelected(null); setModalOpen(true) }} size="sm"
-                        className="bg-violet-600 hover:bg-violet-700">
-                        <Plus className="w-4 h-4 mr-2" /> Novo usuário
-                    </Button>
+            <div className="bg-surface border-b border-border px-6 py-4 flex items-center justify-between gap-4 shrink-0 flex-wrap">
+                <div>
+                    <h1 className="text-[1.375rem] font-bold text-text-900">Usuários</h1>
+                    <p className="text-sm text-text-500 mt-0.5">
+                        {users.length} usuário{users.length !== 1 ? 's cadastrado' : ' cadastrado'}
+                    </p>
                 </div>
+                <Button onClick={() => { setSelected(null); setModalOpen(true) }} size="sm">
+                    <Plus className="w-4 h-4 mr-2" /> Novo usuário
+                </Button>
+            </div>
 
-                <div className="flex items-center gap-3 mt-4">
-                    <div className="relative flex-1 max-w-xs">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                        <Input
-                            placeholder="Buscar por nome ou e-mail..."
-                            value={search}
-                            onChange={e => setSearch(e.target.value)}
-                            className="pl-9 h-9 bg-slate-50 border-slate-200 text-sm"
-                        />
-                    </div>
+            {/* Filtros */}
+            <div className="bg-surface px-6 py-3 border-b border-border flex items-center gap-3 shrink-0">
+                <div className="relative flex-1 max-w-xs">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-400" />
+                    <Input
+                        placeholder="Buscar por nome ou e-mail..."
+                        value={search}
+                        onChange={e => setSearch(e.target.value)}
+                        className="pl-9 h-9"
+                    />
                 </div>
             </div>
 
@@ -207,21 +205,21 @@ export function UsersPage() {
             <div className="flex-1 overflow-auto px-6 py-5">
                 {isLoading ? (
                     <div className="flex items-center justify-center h-40">
-                        <Loader2 className="w-6 h-6 animate-spin text-slate-400" />
+                        <Loader2 className="w-6 h-6 animate-spin text-text-400" />
                     </div>
                 ) : filtered.length === 0 ? (
                     <div className="flex flex-col items-center justify-center h-40 text-center">
-                        <Users className="w-10 h-10 text-slate-300 mb-3" />
-                        <p className="text-slate-500 font-medium">Nenhum usuário encontrado</p>
-                        <p className="text-slate-400 text-sm mt-1">
+                        <Users className="w-10 h-10 text-text-400 mb-3" />
+                        <p className="text-text-700 font-medium">Nenhum usuário encontrado</p>
+                        <p className="text-text-400 text-sm mt-1">
                             {search ? 'Tente outro termo' : 'Clique em "Novo usuário" para começar'}
                         </p>
                     </div>
                 ) : (
-                    <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+                    <div className="bg-surface rounded-[16px] border border-border overflow-hidden">
                         <Table>
                             <TableHeader>
-                                <TableRow className="bg-slate-50 hover:bg-slate-50">
+                                <TableRow className="bg-surface-2 hover:bg-surface-2">
                                     <TableHead>Nome</TableHead>
                                     <TableHead>E-mail</TableHead>
                                     <TableHead>Papel</TableHead>
@@ -232,20 +230,20 @@ export function UsersPage() {
                             <TableBody>
                                 {filtered.map(u => (
                                     <TableRow key={u.id} className={u.active ? '' : 'opacity-50'}>
-                                        <TableCell className="font-medium text-slate-900">
+                                        <TableCell className="font-medium text-text-900">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 rounded-full bg-violet-100 flex items-center justify-center text-xs font-semibold text-violet-700">
+                                                <div className="w-8 h-8 rounded-full bg-brand-100 grid place-items-center text-xs font-semibold text-brand-700 shrink-0">
                                                     {u.name.slice(0, 2).toUpperCase()}
                                                 </div>
                                                 {u.name}
                                                 {isSelf(u) && <Badge variant="outline" className="text-[10px]">você</Badge>}
                                             </div>
                                         </TableCell>
-                                        <TableCell className="text-slate-500">{u.email}</TableCell>
+                                        <TableCell className="text-text-500">{u.email}</TableCell>
                                         <TableCell><RoleBadge role={u.role} /></TableCell>
                                         <TableCell>
                                             {u.active ? (
-                                                <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100">Ativo</Badge>
+                                                <Badge variant="success">Ativo</Badge>
                                             ) : (
                                                 <Badge variant="destructive">Inativo</Badge>
                                             )}
@@ -254,27 +252,27 @@ export function UsersPage() {
                                             <div className="flex justify-end gap-1">
                                                 <button
                                                     onClick={() => { setSelected(u); setModalOpen(true) }}
-                                                    className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                                                    className="p-2 rounded-[8px] text-text-400 hover:text-brand-600 hover:bg-brand-50 transition-colors"
                                                     title="Editar usuário"
                                                 >
-                                                    <Pencil className="w-3.5 h-3.5" />
+                                                    <Pencil className="w-4 h-4" />
                                                 </button>
                                                 {!isSelf(u) && (
                                                     u.active ? (
                                                         <button
                                                             onClick={() => toggleActive(u)}
-                                                            className="p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors"
+                                                            className="p-2 rounded-[8px] text-text-400 hover:text-danger-600 hover:bg-danger-50 transition-colors"
                                                             title="Desativar usuário"
                                                         >
-                                                            <UserX className="w-3.5 h-3.5" />
+                                                            <UserX className="w-4 h-4" />
                                                         </button>
                                                     ) : (
                                                         <button
                                                             onClick={() => toggleActive(u)}
-                                                            className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-colors"
+                                                            className="p-2 rounded-[8px] text-text-400 hover:text-success-600 hover:bg-success-50 transition-colors"
                                                             title="Reativar usuário"
                                                         >
-                                                            <UserCheck className="w-3.5 h-3.5" />
+                                                            <UserCheck className="w-4 h-4" />
                                                         </button>
                                                     )
                                                 )}

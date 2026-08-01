@@ -1,7 +1,9 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreatePdayConfigDto } from './dto/create-pday-config.dto';
 import { CreatePdayExceptionDto } from './dto/create-pday-exception.dto';
+import { CreateTransferWeekDto } from './dto/create-transfer-week.dto';
 
 export const DAY_NAMES = [
   'Domingo',
@@ -94,6 +96,92 @@ export class PdayService {
 
   async deleteException(id: string) {
     return this.prisma.pdayException.delete({ where: { id } });
+  }
+
+  private findWeekdayInWeek(startDate: Date, weekday: number) {
+    const diff = (weekday - startDate.getUTCDay() + 7) % 7;
+    const date = new Date(startDate);
+    date.setUTCDate(date.getUTCDate() + diff);
+    return date;
+  }
+
+  private async upsertException(
+    tx: Prisma.TransactionClient,
+    date: Date,
+    blocked: boolean,
+    reason: string,
+    createdBy?: string,
+  ) {
+    const existing = await tx.pdayException.findFirst({ where: { date } });
+    const data = { date, blocked, reason, createdBy };
+    if (existing) {
+      return tx.pdayException.update({
+        where: { id: existing.id },
+        data,
+      });
+    }
+    return tx.pdayException.create({ data });
+  }
+
+  async createTransferWeek(dto: CreateTransferWeekDto) {
+    const startDate = new Date(dto.startDate);
+    startDate.setUTCHours(0, 0, 0, 0);
+
+    const today = new Date();
+    today.setUTCHours(0, 0, 0, 0);
+
+    if (startDate < today) {
+      throw new BadRequestException(
+        'A semana de transferência deve começar hoje ou no futuro',
+      );
+    }
+
+    const activeConfig = await this.getActiveConfig(startDate);
+    const previousDay = activeConfig.dayOfWeek;
+
+    if (previousDay === dto.newDayOfWeek) {
+      throw new BadRequestException(
+        'O novo dia não pode ser igual ao P-Day vigente',
+      );
+    }
+
+    const endDate = new Date(startDate);
+    endDate.setUTCDate(endDate.getUTCDate() + 6);
+
+    const releaseDate = this.findWeekdayInWeek(startDate, previousDay);
+    const blockDate = this.findWeekdayInWeek(startDate, dto.newDayOfWeek);
+
+    const reason =
+      dto.reason ?? 'Semana de transferência — dia extra sem almoços';
+
+    const [release, block] = await this.prisma.$transaction(async (tx) => {
+      const released = await this.upsertException(
+        tx,
+        releaseDate,
+        false,
+        reason,
+        dto.createdBy,
+      );
+      const blocked = await this.upsertException(
+        tx,
+        blockDate,
+        true,
+        reason,
+        dto.createdBy,
+      );
+      return [released, blocked];
+    });
+
+    return {
+      startDate: startDate.toISOString().split('T')[0],
+      endDate: endDate.toISOString().split('T')[0],
+      previousDay,
+      newDay: dto.newDayOfWeek,
+      releaseDate: releaseDate.toISOString().split('T')[0],
+      blockDate: blockDate.toISOString().split('T')[0],
+      release,
+      block,
+    };
   }
 
   async isPday(date: Date): Promise<{ blocked: boolean; reason: string }> {

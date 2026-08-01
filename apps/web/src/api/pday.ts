@@ -13,6 +13,13 @@ type CreatePdayExceptionInput = {
   reason?: string
 }
 
+type CreateTransferWeekInput = {
+  startDate: string
+  newDayOfWeek: number
+  reason?: string
+  createdBy?: string
+}
+
 export const pdayApi = {
   getAll: () => api.get<PdayConfig[]>('/pday').then((response) => response.data),
   getCurrent: () =>
@@ -23,6 +30,8 @@ export const pdayApi = {
       .then((response) => response.data),
   createConfig: (data: CreatePdayConfigInput) =>
     api.post<PdayConfig>('/pday/config', data).then((response) => response.data),
+  createTransferWeek: (data: CreateTransferWeekInput) =>
+    api.post('/pday/transfer-week', data).then((response) => response.data),
   getExceptions: () =>
     api.get<PdayException[]>('/pday/exceptions').then((response) => response.data),
   createException: (data: CreatePdayExceptionInput) =>

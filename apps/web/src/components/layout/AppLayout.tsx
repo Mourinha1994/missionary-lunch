@@ -9,7 +9,7 @@ export function AppLayout() {
     if (!isAuthenticated) return <Navigate to="/login" replace state={{ from: location }} />
 
     return (
-        <div className="flex h-screen bg-slate-100 overflow-hidden">
+        <div className="flex h-screen bg-canvas overflow-hidden">
             <div className="w-56 shrink-0 h-full">
                 <Sidebar />
             </div>
