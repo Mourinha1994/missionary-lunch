@@ -25,6 +25,7 @@ export function Dashboard() {
     start: dayjs().startOf('month').format('YYYY-MM-DD'),
     end: dayjs().endOf('month').format('YYYY-MM-DD'),
   })
+  const [currentMonth, setCurrentMonth] = useState(dayjs().startOf('month').format('YYYY-MM-DD'))
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
   const [selectedLunchId, setSelectedLunchId] = useState<string | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -55,6 +56,7 @@ export function Dashboard() {
       start: dayjs(arg.start).format('YYYY-MM-DD'),
       end: dayjs(arg.end).format('YYYY-MM-DD'),
     })
+    setCurrentMonth(dayjs(arg.view.currentStart).format('YYYY-MM-DD'))
     setView(arg.view.type as 'dayGridMonth' | 'listWeek')
   }, [])
 
@@ -139,6 +141,7 @@ export function Dashboard() {
                   notes: l.notes,
                 })),
                 blockedDates,
+                currentMonth,
               )
             }
           >
@@ -172,7 +175,7 @@ export function Dashboard() {
                 <ChevronLeft className="w-4 h-4" />
               </button>
               <span className="text-[15px] font-semibold text-text-900 capitalize">
-                {dayjs(currentRange.start).format('MMMM [de] YYYY')}
+                {dayjs(currentMonth).format('MMMM [de] YYYY')}
               </span>
               <div className="flex items-center gap-1.5 shrink-0">
                 <button
