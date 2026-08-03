@@ -16,23 +16,34 @@ type GridCell = { date: string; day: number; inMonth: boolean }
 export function exportCalendarAsPDF(
   lunches: ScaleLunch[],
   blockedDates: CalendarBlockedDate[] = [],
+  month = '',
   fileName = '',
 ) {
   const sorted = sortLunches(lunches)
   if (sorted.length === 0) return
-  const effective = fileName || `almoco-missionarios-${dayjs(sorted[0].date).format('MM-YYYY')}.pdf`
-  buildCalendarPDF(sorted, blockedDates, effective)
+  const monthStart = month ? dayjs(month).startOf('month') : dayjs(sorted[0].date).startOf('month')
+  const monthEnd = monthStart.endOf('month')
+  const monthLunches = sorted.filter((l) => {
+    const d = dayjs(l.date)
+    return !d.isBefore(monthStart, 'day') && !d.isAfter(monthEnd, 'day')
+  })
+  if (monthLunches.length === 0) return
+  const effective = fileName || `almoco-missionarios-${monthStart.format('MM-YYYY')}.pdf`
+  buildCalendarPDF(monthLunches, blockedDates, monthStart, effective)
 }
 
-function buildCalendarPDF(lunches: ScaleLunch[], blockedDates: CalendarBlockedDate[], fileName: string) {
+function buildCalendarPDF(
+  lunches: ScaleLunch[],
+  blockedDates: CalendarBlockedDate[],
+  month: dayjs.Dayjs,
+  fileName: string,
+) {
   const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' })
   const pageWidth = doc.internal.pageSize.getWidth()
   const pageHeight = doc.internal.pageSize.getHeight()
   const margin = 42
   const contentWidth = pageWidth - margin * 2
   const colW = contentWidth / 7
-
-  const month = dayjs(lunches[0].date).startOf('month')
 
   const byDate = new Map<string, ScaleLunch[]>()
   for (const l of lunches) {
