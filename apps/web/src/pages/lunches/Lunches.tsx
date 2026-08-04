@@ -68,6 +68,52 @@ function LunchRow({ lunch, onEdit }: { lunch: Lunch; onEdit: (l: Lunch) => void 
     )
 }
 
+function LunchCard({ lunch, onEdit }: { lunch: Lunch; onEdit: (l: Lunch) => void }) {
+    const isToday = dayjs(lunch.date).isSame(dayjs(), 'day')
+    const isPast = dayjs(lunch.date).isBefore(dayjs(), 'day')
+
+    return (
+        <div className={`bg-surface rounded-[16px] border border-border p-4 flex flex-col gap-3 ${isPast ? 'opacity-60' : ''}`}>
+            <div className="flex items-start justify-between gap-2">
+                <div className="flex items-center gap-2 min-w-0">
+                    {isToday && <span className="w-2 h-2 rounded-full bg-success-500 shrink-0" />}
+                    <div>
+                        <p className={`text-sm font-semibold ${isToday ? 'text-success-700' : 'text-text-900'}`}>
+                            {dayjs(lunch.date).format('DD/MM/YYYY')}
+                        </p>
+                        <p className="text-xs text-text-400 capitalize">
+                            {dayjs(lunch.date).format('dddd')}
+                            {isToday && ' · Hoje'}
+                        </p>
+                    </div>
+                </div>
+                <button onClick={() => onEdit(lunch)}
+                    className="p-2 rounded-[8px] text-text-400 hover:text-brand-600 hover:bg-brand-50 transition-colors">
+                    <Pencil className="w-4 h-4" />
+                </button>
+            </div>
+            <div className="flex items-center gap-2.5">
+                <div className="w-7 h-7 rounded-lg bg-brand-100 grid place-items-center
+                      text-xs font-bold text-brand-700 shrink-0">
+                    {lunch.family.name[0].toUpperCase()}
+                </div>
+                <div className="min-w-0">
+                    <p className="text-sm font-medium text-text-900 truncate">{lunch.family.name}</p>
+                    <p className="text-xs text-text-400 truncate">{lunch.family.contact}</p>
+                </div>
+            </div>
+            <div className="flex flex-wrap gap-1">
+                {lunch.missionaries.map(m => (
+                    <Badge key={m.id} variant={m.gender === 'FEMALE' ? 'female' : 'male'}>
+                        {m.name.split(' ')[0]}
+                    </Badge>
+                ))}
+            </div>
+            {lunch.notes && <p className="text-xs text-text-500 truncate">{lunch.notes}</p>}
+        </div>
+    )
+}
+
 export function LunchesPage() {
     const [currentMonth, setCurrentMonth] = useState(dayjs())
     const [search, setSearch] = useState('')
@@ -156,65 +202,86 @@ export function LunchesPage() {
                 ))}
             </div>
 
-            {/* Tabela */}
+            {/* Conteúdo */}
             <div className="flex-1 overflow-auto px-6 py-5">
-                <div className="bg-surface rounded-[16px] border border-border overflow-hidden">
-                    {isLoading ? (
-                        <div className="flex items-center justify-center h-40">
-                            <Loader2 className="w-6 h-6 animate-spin text-text-400" />
+                {isLoading ? (
+                    <div className="flex items-center justify-center h-40">
+                        <Loader2 className="w-6 h-6 animate-spin text-text-400" />
+                    </div>
+                ) : filtered.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center h-40 text-center">
+                        <UtensilsCrossed className="w-10 h-10 text-text-400 mb-3" />
+                        <p className="text-text-700 font-medium">Nenhum almoço encontrado</p>
+                        <p className="text-text-400 text-sm mt-1">
+                            {search ? 'Tente outro termo' : 'Clique em "Agendar almoço" para começar'}
+                        </p>
+                    </div>
+                ) : (
+                    <>
+                        {/* Tabela (desktop) */}
+                        <div className="hidden md:block bg-surface rounded-[16px] border border-border overflow-hidden">
+                            <table className="w-full">
+                                <thead>
+                                    <tr className="border-b border-border bg-surface-2">
+                                        <th className="px-4 py-3 text-left text-xs font-semibold text-text-500 uppercase tracking-wider w-36">Data</th>
+                                        <th className="px-4 py-3 text-left text-xs font-semibold text-text-500 uppercase tracking-wider">Família</th>
+                                        <th className="px-4 py-3 text-left text-xs font-semibold text-text-500 uppercase tracking-wider">Missionários</th>
+                                        <th className="px-4 py-3 text-left text-xs font-semibold text-text-500 uppercase tracking-wider">Observações</th>
+                                        <th className="px-4 py-3 w-10" />
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {/* Próximos */}
+                                    {upcoming.length > 0 && (
+                                        <>
+                                            <tr className="bg-success-50/50">
+                                                <td colSpan={5} className="px-4 py-2">
+                                                    <span className="text-xs font-semibold text-success-700 flex items-center gap-1.5">
+                                                        <span className="w-1.5 h-1.5 rounded-full bg-success-500 inline-block" />
+                                                        Próximos almoços ({upcoming.length})
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            {upcoming.map(l => <LunchRow key={l.id} lunch={l} onEdit={handleEdit} />)}
+                                        </>
+                                    )}
+                                    {/* Realizados */}
+                                    {past.length > 0 && (
+                                        <>
+                                            <tr className="bg-surface-2">
+                                                <td colSpan={5} className="px-4 py-2">
+                                                    <span className="text-xs font-semibold text-text-500 flex items-center gap-1.5">
+                                                        <span className="w-1.5 h-1.5 rounded-full bg-text-400 inline-block" />
+                                                        Realizados ({past.length})
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            {past.map(l => <LunchRow key={l.id} lunch={l} onEdit={handleEdit} />)}
+                                        </>
+                                    )}
+                                </tbody>
+                            </table>
                         </div>
-                    ) : filtered.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center h-40 text-center">
-                            <UtensilsCrossed className="w-10 h-10 text-text-400 mb-3" />
-                            <p className="text-text-700 font-medium">Nenhum almoço encontrado</p>
-                            <p className="text-text-400 text-sm mt-1">
-                                {search ? 'Tente outro termo' : 'Clique em "Agendar almoço" para começar'}
-                            </p>
+
+                        {/* Cards (mobile) */}
+                        <div className="md:hidden space-y-3">
+                            {upcoming.length > 0 && (
+                                <p className="text-xs font-semibold text-success-700 flex items-center gap-1.5">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-success-500 inline-block" />
+                                    Próximos almoços ({upcoming.length})
+                                </p>
+                            )}
+                            {upcoming.map(l => <LunchCard key={l.id} lunch={l} onEdit={handleEdit} />)}
+                            {past.length > 0 && (
+                                <p className="text-xs font-semibold text-text-500 flex items-center gap-1.5 pt-2">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-text-400 inline-block" />
+                                    Realizados ({past.length})
+                                </p>
+                            )}
+                            {past.map(l => <LunchCard key={l.id} lunch={l} onEdit={handleEdit} />)}
                         </div>
-                    ) : (
-                        <table className="w-full">
-                            <thead>
-                                <tr className="border-b border-border bg-surface-2">
-                                    <th className="px-4 py-3 text-left text-xs font-semibold text-text-500 uppercase tracking-wider w-36">Data</th>
-                                    <th className="px-4 py-3 text-left text-xs font-semibold text-text-500 uppercase tracking-wider">Família</th>
-                                    <th className="px-4 py-3 text-left text-xs font-semibold text-text-500 uppercase tracking-wider">Missionários</th>
-                                    <th className="px-4 py-3 text-left text-xs font-semibold text-text-500 uppercase tracking-wider">Observações</th>
-                                    <th className="px-4 py-3 w-10" />
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {/* Próximos */}
-                                {upcoming.length > 0 && (
-                                    <>
-                                        <tr className="bg-success-50/50">
-                                            <td colSpan={5} className="px-4 py-2">
-                                                <span className="text-xs font-semibold text-success-700 flex items-center gap-1.5">
-                                                    <span className="w-1.5 h-1.5 rounded-full bg-success-500 inline-block" />
-                                                    Próximos almoços ({upcoming.length})
-                                                </span>
-                                            </td>
-                                        </tr>
-                                        {upcoming.map(l => <LunchRow key={l.id} lunch={l} onEdit={handleEdit} />)}
-                                    </>
-                                )}
-                                {/* Realizados */}
-                                {past.length > 0 && (
-                                    <>
-                                        <tr className="bg-surface-2">
-                                            <td colSpan={5} className="px-4 py-2">
-                                                <span className="text-xs font-semibold text-text-500 flex items-center gap-1.5">
-                                                    <span className="w-1.5 h-1.5 rounded-full bg-text-400 inline-block" />
-                                                    Realizados ({past.length})
-                                                </span>
-                                            </td>
-                                        </tr>
-                                        {past.map(l => <LunchRow key={l.id} lunch={l} onEdit={handleEdit} />)}
-                                    </>
-                                )}
-                            </tbody>
-                        </table>
-                    )}
-                </div>
+                    </>
+                )}
             </div>
 
             <LunchFormModal

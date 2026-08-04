@@ -73,6 +73,23 @@
     padding: 6px 8px;
 }
 
+/* Número da semana (DS: badge "weeknum" no topo das células) */
+.fc .fc-daygrid-day-top {
+    position: relative;
+    align-items: flex-start;
+}
+
+.fc .fc-daygrid-day-top .weeknum {
+    position: absolute;
+    left: 6px;
+    top: 6px;
+    font-size: 9px;
+    font-weight: 600;
+    color: #93A1B4;
+    line-height: 1;
+    white-space: nowrap;
+}
+
 .fc .fc-day-today .fc-daygrid-day-number {
     background: #2553E0 !important;
     color: white !important;
