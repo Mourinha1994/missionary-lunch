@@ -2,7 +2,10 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { useUsers, useCreateUser, useUpdateUser, useRemoveUser } from '@/hooks/useUsers'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
+import { useUsers, useCreateUser, useUpdateUser, USERS_KEY } from '@/hooks/useUsers'
+import { usersApi } from '@/api/users'
 import { useAuthStore } from '@/store/authStore'
 import type { User, Role } from '@/types'
 import { Button } from '@/components/ui/button'
@@ -146,10 +149,73 @@ function UserFormModal({
     )
 }
 
+function UserCard({
+    user,
+    isSelf,
+    onEdit,
+    onToggleActive,
+}: {
+    user: User
+    isSelf: boolean
+    onEdit: (u: User) => void
+    onToggleActive: (u: User) => void
+}) {
+    return (
+        <div className="bg-surface rounded-[16px] border border-border p-4 flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-brand-100 grid place-items-center text-xs font-semibold text-brand-700 shrink-0">
+                {user.name.slice(0, 2).toUpperCase()}
+            </div>
+            <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-1.5">
+                    <p className="text-sm font-semibold text-text-900 truncate">{user.name}</p>
+                    {isSelf && <Badge variant="outline" className="text-[10px]">você</Badge>}
+                </div>
+                <p className="text-xs text-text-500 truncate">{user.email}</p>
+                <div className="flex items-center gap-2 mt-1.5">
+                    <RoleBadge role={user.role} />
+                    {user.active ? (
+                        <Badge variant="success">Ativo</Badge>
+                    ) : (
+                        <Badge variant="destructive">Inativo</Badge>
+                    )}
+                </div>
+            </div>
+            <div className="flex flex-col gap-1">
+                <button
+                    onClick={() => onEdit(user)}
+                    className="w-10 h-10 rounded-[8px] grid place-items-center text-text-400 hover:text-brand-600 hover:bg-brand-50 transition-colors"
+                    title="Editar usuário"
+                >
+                    <Pencil className="w-4 h-4" />
+                </button>
+                {!isSelf && (
+                    user.active ? (
+                        <button
+                            onClick={() => onToggleActive(user)}
+                            className="w-10 h-10 rounded-[8px] grid place-items-center text-text-400 hover:text-danger-600 hover:bg-danger-50 transition-colors"
+                            title="Desativar usuário"
+                        >
+                            <UserX className="w-4 h-4" />
+                        </button>
+                    ) : (
+                        <button
+                            onClick={() => onToggleActive(user)}
+                            className="w-10 h-10 rounded-[8px] grid place-items-center text-text-400 hover:text-success-600 hover:bg-success-50 transition-colors"
+                            title="Reativar usuário"
+                        >
+                            <UserCheck className="w-4 h-4" />
+                        </button>
+                    )
+                )}
+            </div>
+        </div>
+    )
+}
+
 export function UsersPage() {
+    const qc = useQueryClient()
     const { data: users = [], isLoading } = useUsers()
     const updateUser = useUpdateUser()
-    const removeUser = useRemoveUser()
     const currentUser = useAuthStore(s => s.user)
 
     const [search, setSearch] = useState('')
@@ -163,9 +229,27 @@ export function UsersPage() {
 
     const isSelf = (u: User) => u.id === currentUser?.id
 
+    const deactivate = useMutation({
+        mutationFn: usersApi.remove,
+        onSuccess: (_data, userId) => {
+            qc.invalidateQueries({ queryKey: USERS_KEY })
+            toast('Usuário desativado', {
+                description: 'O usuário não consegue mais entrar.',
+                action: {
+                    label: 'Desfazer',
+                    onClick: () => {
+                        usersApi.update(userId, { active: true }).then(() => {
+                            qc.invalidateQueries({ queryKey: USERS_KEY })
+                        })
+                    },
+                },
+            })
+        },
+    })
+
     const toggleActive = (u: User) => {
         if (u.active) {
-            removeUser.mutate(u.id)
+            deactivate.mutate(u.id)
         } else {
             updateUser.mutate({ id: u.id, data: { active: true } })
         }
@@ -216,73 +300,87 @@ export function UsersPage() {
                         </p>
                     </div>
                 ) : (
-                    <div className="bg-surface rounded-[16px] border border-border overflow-hidden">
-                        <Table>
-                            <TableHeader>
-                                <TableRow className="bg-surface-2 hover:bg-surface-2">
-                                    <TableHead>Nome</TableHead>
-                                    <TableHead>E-mail</TableHead>
-                                    <TableHead>Papel</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead className="text-right">Ações</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {filtered.map(u => (
-                                    <TableRow key={u.id} className={u.active ? '' : 'opacity-50'}>
-                                        <TableCell className="font-medium text-text-900">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 rounded-full bg-brand-100 grid place-items-center text-xs font-semibold text-brand-700 shrink-0">
-                                                    {u.name.slice(0, 2).toUpperCase()}
-                                                </div>
-                                                {u.name}
-                                                {isSelf(u) && <Badge variant="outline" className="text-[10px]">você</Badge>}
-                                            </div>
-                                        </TableCell>
-                                        <TableCell className="text-text-500">{u.email}</TableCell>
-                                        <TableCell><RoleBadge role={u.role} /></TableCell>
-                                        <TableCell>
-                                            {u.active ? (
-                                                <Badge variant="success">Ativo</Badge>
-                                            ) : (
-                                                <Badge variant="destructive">Inativo</Badge>
-                                            )}
-                                        </TableCell>
-                                        <TableCell className="text-right">
-                                            <div className="flex justify-end gap-1">
-                                                <button
-                                                    onClick={() => { setSelected(u); setModalOpen(true) }}
-                                                    className="p-2 rounded-[8px] text-text-400 hover:text-brand-600 hover:bg-brand-50 transition-colors"
-                                                    title="Editar usuário"
-                                                >
-                                                    <Pencil className="w-4 h-4" />
-                                                </button>
-                                                {!isSelf(u) && (
-                                                    u.active ? (
-                                                        <button
-                                                            onClick={() => toggleActive(u)}
-                                                            className="p-2 rounded-[8px] text-text-400 hover:text-danger-600 hover:bg-danger-50 transition-colors"
-                                                            title="Desativar usuário"
-                                                        >
-                                                            <UserX className="w-4 h-4" />
-                                                        </button>
-                                                    ) : (
-                                                        <button
-                                                            onClick={() => toggleActive(u)}
-                                                            className="p-2 rounded-[8px] text-text-400 hover:text-success-600 hover:bg-success-50 transition-colors"
-                                                            title="Reativar usuário"
-                                                        >
-                                                            <UserCheck className="w-4 h-4" />
-                                                        </button>
-                                                    )
-                                                )}
-                                            </div>
-                                        </TableCell>
+                    <>
+                        <div className="hidden md:block bg-surface rounded-[16px] border border-border overflow-hidden">
+                            <Table>
+                                <TableHeader>
+                                    <TableRow className="bg-surface-2 hover:bg-surface-2">
+                                        <TableHead>Nome</TableHead>
+                                        <TableHead>E-mail</TableHead>
+                                        <TableHead>Papel</TableHead>
+                                        <TableHead>Status</TableHead>
+                                        <TableHead className="text-right">Ações</TableHead>
                                     </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </div>
+                                </TableHeader>
+                                <TableBody>
+                                    {filtered.map(u => (
+                                        <TableRow key={u.id} className={u.active ? '' : 'opacity-50'}>
+                                            <TableCell className="font-medium text-text-900">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-8 h-8 rounded-full bg-brand-100 grid place-items-center text-xs font-semibold text-brand-700 shrink-0">
+                                                        {u.name.slice(0, 2).toUpperCase()}
+                                                    </div>
+                                                    {u.name}
+                                                    {isSelf(u) && <Badge variant="outline" className="text-[10px]">você</Badge>}
+                                                </div>
+                                            </TableCell>
+                                            <TableCell className="text-text-500">{u.email}</TableCell>
+                                            <TableCell><RoleBadge role={u.role} /></TableCell>
+                                            <TableCell>
+                                                {u.active ? (
+                                                    <Badge variant="success">Ativo</Badge>
+                                                ) : (
+                                                    <Badge variant="destructive">Inativo</Badge>
+                                                )}
+                                            </TableCell>
+                                            <TableCell className="text-right">
+                                                <div className="flex justify-end gap-1">
+                                                    <button
+                                                        onClick={() => { setSelected(u); setModalOpen(true) }}
+                                                        className="p-2 rounded-[8px] text-text-400 hover:text-brand-600 hover:bg-brand-50 transition-colors"
+                                                        title="Editar usuário"
+                                                    >
+                                                        <Pencil className="w-4 h-4" />
+                                                    </button>
+                                                    {!isSelf(u) && (
+                                                        u.active ? (
+                                                            <button
+                                                                onClick={() => toggleActive(u)}
+                                                                className="p-2 rounded-[8px] text-text-400 hover:text-danger-600 hover:bg-danger-50 transition-colors"
+                                                                title="Desativar usuário"
+                                                            >
+                                                                <UserX className="w-4 h-4" />
+                                                            </button>
+                                                        ) : (
+                                                            <button
+                                                                onClick={() => toggleActive(u)}
+                                                                className="p-2 rounded-[8px] text-text-400 hover:text-success-600 hover:bg-success-50 transition-colors"
+                                                                title="Reativar usuário"
+                                                            >
+                                                                <UserCheck className="w-4 h-4" />
+                                                            </button>
+                                                        )
+                                                    )}
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </div>
+
+                        <div className="md:hidden space-y-3">
+                            {filtered.map(u => (
+                                <UserCard
+                                    key={u.id}
+                                    user={u}
+                                    isSelf={isSelf(u)}
+                                    onEdit={(user) => { setSelected(user); setModalOpen(true) }}
+                                    onToggleActive={toggleActive}
+                                />
+                            ))}
+                        </div>
+                    </>
                 )}
             </div>
 
