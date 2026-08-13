@@ -171,7 +171,9 @@ npm run dev               # http://localhost:5173 (e URL da rede local no consol
 
 ---
 
-## 🛣️ Roadmap (MVP)
+## 🛣️ Roadmap
+
+### R1 (MVP) — entregue
 
 - [x] Aplicação de papéis (ADMIN/COORDINATOR) nas rotas e na interface
 - [x] Gestão de usuários (criação, convite, alteração de papel)
@@ -180,7 +182,20 @@ npm run dev               # http://localhost:5173 (e URL da rede local no consol
 - [x] Tutorial de boas-vindas (onboarding) com replay pelo menu lateral
 - [x] Dashboard com métricas reais e exportação da escala semanal
 
----
+### R2 (coordenador + mobile) — entregue
+
+- [x] Desfazer em desativações (usuários, famílias e missionários)
+- [x] Sinais de contexto no calendário (badge de rotação e número da semana)
+- [x] Ala configurável via `VITE_WARD_NAME`
+- [x] Compartilhamento da escala por Web Share API no mobile
+- [x] Mobile-first: bottom nav, modais como bottom-sheet, touch targets ≥ 40px
+- [x] Dashboard mobile com stats do mês e header compacto
+
+### R3 — planejada
+
+- [ ] **Dark mode / dark theme** com detecção automática do aparelho (sistema/claro/escuro) e preferência salva
+- [ ] Navegação por teclado no calendário (setas + `aria-live`)
+- [ ] Validação final da R2 em 3 aparelhos
 
 ---
 
