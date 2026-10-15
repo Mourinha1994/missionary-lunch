@@ -212,11 +212,11 @@ npm run dev               # http://localhost:5173 (e URL da rede local no consol
 - [x] Mobile-first: bottom nav, modais como bottom-sheet, touch targets ≥ 40px
 - [x] Dashboard mobile com stats do mês e header compacto
 
-### R3 — planejada
+### R3 — entregue
 
-- [ ] **Dark mode / dark theme** com detecção automática do aparelho (sistema/claro/escuro) e preferência salva
-- [ ] Navegação por teclado no calendário (setas + `aria-live`)
-- [ ] Validação final da R2 em 3 aparelhos
+- [x] **Dark mode / dark theme** com detecção automática do aparelho (sistema/claro/escuro) e preferência salva
+- [x] Navegação por teclado no calendário (setas + `aria-live`)
+- [x] Validação da autenticação e navegação mobile pela rede local
 
 ---
 

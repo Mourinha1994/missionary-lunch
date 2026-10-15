@@ -44,13 +44,9 @@ export function DateInput({
   value = '',
   ...props
 }: DateInputProps) {
-  const [displayValue, setDisplayValue] = React.useState(() => formatDate(value))
-  const [invalid, setInvalid] = React.useState(false)
-
-  React.useEffect(() => {
-    setDisplayValue(formatDate(value))
-    setInvalid(false)
-  }, [value])
+  const [draftValue, setDraftValue] = React.useState<string | null>(null)
+  const displayValue = draftValue ?? formatDate(value)
+  const invalid = Boolean(displayValue) && !parseDate(displayValue)
 
   const notifyChange = (nextValue: string) => {
     onChange?.({
@@ -63,8 +59,7 @@ export function DateInput({
     const nextDisplayValue = event.target.value
     const parsedValue = parseDate(nextDisplayValue)
 
-    setDisplayValue(nextDisplayValue)
-    setInvalid(Boolean(nextDisplayValue) && !parsedValue)
+    setDraftValue(nextDisplayValue)
     notifyChange(parsedValue ?? '')
   }
 
@@ -72,8 +67,9 @@ export function DateInput({
     const parsedValue = parseDate(displayValue)
 
     if (parsedValue) {
-      setDisplayValue(formatDate(parsedValue))
-      setInvalid(false)
+      setDraftValue(null)
+    } else if (!displayValue) {
+      setDraftValue(null)
     }
 
     onBlur?.(event)
@@ -101,8 +97,7 @@ export function DateInput({
         max={props.max}
         disabled={disabled}
         onChange={(event) => {
-          setDisplayValue(formatDate(event.target.value))
-          setInvalid(false)
+          setDraftValue(null)
           notifyChange(event.target.value)
         }}
         aria-label="Abrir calendário"

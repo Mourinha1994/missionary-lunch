@@ -6,6 +6,7 @@ import {
 import { useAuthStore } from '@/store/authStore'
 import { cn } from '@/lib/utils'
 import { startTutorial } from '@/lib/onboarding'
+import { ThemeSelector } from './ThemeSelector'
 
 const mainItems = [
   { to: '/', icon: Calendar, label: 'Calendário', end: true },
@@ -63,6 +64,12 @@ export function BottomNav() {
                 <ShieldCheck className="w-4 h-4" /> Usuários
               </NavLink>
             )}
+            <div className="border-t border-border px-3 py-3">
+              <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-text-400">
+                Aparência
+              </p>
+              <ThemeSelector />
+            </div>
             <button
               onClick={() => { setMoreOpen(false); startTutorial(user?.role ?? 'COORDINATOR') }}
               className="flex w-full items-center gap-3 rounded-[10px] px-3 py-3 text-sm font-medium text-text-700 hover:bg-surface-2"

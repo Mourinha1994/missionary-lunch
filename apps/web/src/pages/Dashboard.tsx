@@ -1,5 +1,12 @@
 // src/pages/Dashboard.tsx
-import { useState, useRef, useCallback, useEffect, useMemo } from 'react'
+import {
+  useState,
+  useRef,
+  useCallback,
+  useEffect,
+  useMemo,
+  type KeyboardEvent,
+} from 'react'
 import { useNavigate } from 'react-router-dom'
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -35,7 +42,16 @@ export function Dashboard() {
   const [selectedLunchId, setSelectedLunchId] = useState<string | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [view, setView] = useState<'dayGridMonth' | 'listWeek'>('dayGridMonth')
+  const [keyboardDate, setKeyboardDate] = useState(dayjs().format('YYYY-MM-DD'))
+  const [calendarAnnouncement, setCalendarAnnouncement] = useState('')
   const calendarRef = useRef<FullCalendar | null>(null)
+  const calendarWrapperRef = useRef<HTMLDivElement | null>(null)
+  const shouldRestoreCalendarFocus = useRef(false)
+
+  const announceCalendar = useCallback((message: string) => {
+    setCalendarAnnouncement('')
+    window.setTimeout(() => setCalendarAnnouncement(message), 0)
+  }, [])
 
   const { data: lunches = [] } = useQuery({
     queryKey: ['lunches', currentRange],
@@ -56,14 +72,22 @@ export function Dashboard() {
       ),
   })
 
-  const handleDatesSet = useCallback((arg: DatesSetArg) => {
-    setCurrentRange({
-      start: dayjs(arg.start).format('YYYY-MM-DD'),
-      end: dayjs(arg.end).format('YYYY-MM-DD'),
-    })
-    setCurrentMonth(dayjs(arg.view.currentStart).format('YYYY-MM-DD'))
-    setView(arg.view.type as 'dayGridMonth' | 'listWeek')
-  }, [])
+  const handleDatesSet = useCallback(
+    (arg: DatesSetArg) => {
+      const month = dayjs(arg.view.currentStart)
+
+      setCurrentRange({
+        start: dayjs(arg.start).format('YYYY-MM-DD'),
+        end: dayjs(arg.end).format('YYYY-MM-DD'),
+      })
+      setCurrentMonth(month.format('YYYY-MM-DD'))
+      setView(arg.view.type as 'dayGridMonth' | 'listWeek')
+      announceCalendar(
+        `${arg.view.type === 'dayGridMonth' ? 'Calendário mensal' : 'Calendário semanal'}: ${month.format('MMMM [de] YYYY')}`,
+      )
+    },
+    [announceCalendar],
+  )
 
   useEffect(() => {
     if (hasSeenTutorial()) return
@@ -76,6 +100,7 @@ export function Dashboard() {
   const handleDateClick = useCallback((arg: DateClickArg) => {
     const isBlocked = blockedDates.some(b => b.date === arg.dateStr)
     if (isBlocked) return
+    setKeyboardDate(arg.dateStr)
     setSelectedDate(arg.dateStr)
     setSelectedLunchId(null)
     setIsModalOpen(true)
@@ -129,10 +154,66 @@ export function Dashboard() {
   )
 
   const handleDayCellClassNames = useCallback(
-    (arg: { date: Date }) =>
-      blockedSet.has(dayjs(arg.date).format('YYYY-MM-DD')) ? ['pday-block-cell'] : [],
-    [blockedSet],
+    (arg: { date: Date }) => {
+      const date = dayjs(arg.date).format('YYYY-MM-DD')
+      const classNames = []
+
+      if (blockedSet.has(date)) classNames.push('pday-block-cell')
+      if (date === keyboardDate) classNames.push('calendar-keyboard-focus')
+
+      return classNames
+    },
+    [blockedSet, keyboardDate],
   )
+
+  useEffect(() => {
+    if (!shouldRestoreCalendarFocus.current || view !== 'dayGridMonth') return
+
+    const frame = window.requestAnimationFrame(() => {
+      const target = calendarWrapperRef.current?.querySelector<HTMLAnchorElement>(
+        `[data-date="${keyboardDate}"] .fc-daygrid-day-number`,
+      )
+
+      target?.focus()
+      shouldRestoreCalendarFocus.current = false
+    })
+
+    return () => window.cancelAnimationFrame(frame)
+  }, [currentMonth, keyboardDate, view])
+
+  const handleCalendarKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (view !== 'dayGridMonth') return
+
+    const offsets: Record<string, number> = {
+      ArrowLeft: -1,
+      ArrowRight: 1,
+      ArrowUp: -7,
+      ArrowDown: 7,
+    }
+    const offset = offsets[event.key]
+
+    if (!offset) return
+
+    event.preventDefault()
+
+    const nextDate = dayjs(keyboardDate).add(offset, 'day')
+    const nextDateKey = nextDate.format('YYYY-MM-DD')
+    const lunch = lunches.find((item) => String(item.date).split('T')[0] === nextDateKey)
+    const blocked = blockedDates.some((item) => item.date === nextDateKey && item.blocked !== false)
+
+    shouldRestoreCalendarFocus.current = true
+    setKeyboardDate(nextDateKey)
+    calendarRef.current?.getApi().gotoDate(nextDate.toDate())
+    announceCalendar(
+      `${nextDate.format('dddd, D [de] MMMM [de] YYYY')}. ${
+        blocked
+          ? 'P-Day ou data bloqueada.'
+          : lunch
+            ? `Almoço com ${lunch.family.name}.`
+            : 'Data disponível.'
+      }`,
+    )
+  }
 
   // Banner de semana de transferência quando existe uma exceção liberada no período
   const transferWeek = blockedDates.find((b) => b.isException && b.blocked === false) ?? null
@@ -294,29 +375,40 @@ export function Dashboard() {
                 </button>
                 <div className="inline-flex bg-surface-2 rounded-lg p-[3px] gap-0.5">
                   <button
-                    className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                    className={`min-h-10 sm:min-h-0 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
                       view === 'dayGridMonth'
                         ? 'bg-surface text-text-900 shadow-[0_1px_2px_rgba(15,23,42,0.04)]'
                         : 'text-text-500 hover:text-text-900'
                     }`}
                     onClick={() => calendarRef.current?.getApi().changeView('dayGridMonth')}
+                    aria-pressed={view === 'dayGridMonth'}
                   >
                     Mês
                   </button>
                   <button
-                    className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                    className={`min-h-10 sm:min-h-0 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
                       view === 'listWeek'
                         ? 'bg-surface text-text-900 shadow-[0_1px_2px_rgba(15,23,42,0.04)]'
                         : 'text-text-500 hover:text-text-900'
                     }`}
                     onClick={() => calendarRef.current?.getApi().changeView('listWeek')}
+                    aria-pressed={view === 'listWeek'}
                   >
                     Semana
                   </button>
                 </div>
               </div>
             </div>
-            <div className="flex-1 min-h-0">
+            <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+              {calendarAnnouncement}
+            </p>
+            <div
+              ref={calendarWrapperRef}
+              className="flex-1 min-h-0"
+              tabIndex={0}
+              aria-label="Calendário de almoços. Use as setas para navegar entre datas."
+              onKeyDown={handleCalendarKeyDown}
+            >
               <FullCalendar
                 ref={calendarRef}
                 plugins={[dayGridPlugin, interactionPlugin, listPlugin]}

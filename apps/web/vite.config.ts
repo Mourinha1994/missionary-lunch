@@ -15,7 +15,7 @@ export default defineConfig({
     proxy: {
       // O front consome a API no mesmo origin (/api); o Vite encaminha para a API.
       '/api': {
-        target: process.env.API_PROXY_TARGET ?? 'http://localhost:3009',
+        target: process.env.API_PROXY_TARGET ?? 'http://localhost:3000',
         changeOrigin: true,
       },
     },

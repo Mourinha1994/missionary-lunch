@@ -189,3 +189,57 @@
 .fc .fc-daygrid-day.pday-block-cell .fc-daygrid-day-number {
     color: #DC2626;
 }
+
+.dark .fc .fc-button {
+    border-color: var(--border);
+    color: var(--text-500);
+}
+
+.dark .fc .fc-button:hover {
+    background: var(--surface-2);
+    border-color: var(--border-strong);
+    color: var(--text-900);
+}
+
+.dark .fc .fc-col-header-cell,
+.dark .fc .fc-list-day-cushion {
+    background: var(--surface-2);
+    border-color: var(--border);
+}
+
+.dark .fc .fc-col-header-cell-cushion,
+.dark .fc .fc-daygrid-day-number,
+.dark .fc .fc-list-event-time {
+    color: var(--text-400);
+}
+
+.dark .fc .fc-daygrid-day,
+.dark .fc .fc-scrollgrid {
+    border-color: var(--border);
+}
+
+.dark .fc .fc-list-event:hover td {
+    background: var(--surface-2);
+}
+
+.dark .fc .fc-list-day-cushion,
+.dark .fc .fc-list-event-title a {
+    color: var(--text-900);
+}
+
+.dark .fc .fc-bg-event.pday-block {
+    background: linear-gradient(135deg, #431B23, #351820);
+}
+
+.dark .fc .fc-bg-event.pday-liberated {
+    background: var(--brand-100);
+}
+
+.fc .fc-daygrid-day.calendar-keyboard-focus {
+    outline: 2px solid var(--brand-500);
+    outline-offset: -2px;
+}
+
+.fc .fc-daygrid-day.calendar-keyboard-focus .fc-daygrid-day-number {
+    color: var(--brand-700);
+}
