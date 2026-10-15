@@ -70,6 +70,27 @@ mongod --replSet rs0 --dbpath ./data/db --port 27017
 mongosh --eval "rs.initiate()"
 ```
 
+**Opção C — MongoDB com Docker (desenvolvimento):**
+
+Com o Docker Desktop em execução, na raiz do repositório:
+
+```bash
+docker compose up -d
+```
+
+O serviço inicia MongoDB em `localhost:27017` e configura automaticamente o
+replica set `rs0`. Para a API local, use:
+
+```env
+DATABASE_URL="mongodb://localhost:27017/missionary_lunch?replicaSet=rs0"
+```
+
+Para parar o banco sem apagar os dados:
+
+```bash
+docker compose down
+```
+
 ### 2. Configurar as variáveis de ambiente
 
 Copie `.env.example` para `.env` em `apps/api` e preencha:
