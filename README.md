@@ -70,6 +70,27 @@ mongod --replSet rs0 --dbpath ./data/db --port 27017
 mongosh --eval "rs.initiate()"
 ```
 
+**Opção C — MongoDB com Docker (desenvolvimento):**
+
+Com o Docker Desktop em execução, na raiz do repositório:
+
+```bash
+docker compose up -d
+```
+
+O serviço inicia MongoDB em `localhost:27017` e configura automaticamente o
+replica set `rs0`. Para a API local, use:
+
+```env
+DATABASE_URL="mongodb://localhost:27017/missionary_lunch?replicaSet=rs0"
+```
+
+Para parar o banco sem apagar os dados:
+
+```bash
+docker compose down
+```
+
 ### 2. Configurar as variáveis de ambiente
 
 Copie `.env.example` para `.env` em `apps/api` e preencha:
@@ -109,10 +130,20 @@ A documentação interativa da API fica em **http://localhost:3000/api/docs**.
 ```bash
 cd apps/web
 npm install
-npm run dev               # http://localhost:5173
+npm run dev               # http://localhost:5173 (e URL da rede local no console)
 ```
 
-> Por padrão o frontend consome `http://localhost:3000/api`. Para apontar para outro endereço, defina `VITE_API_URL`.
+> O Vite roda com `host: true`, então além do `localhost` ele publica uma **URL da rede local** (ex.: `http://192.168.x.x:5173`) para testar em celulares e outros aparelhos na mesma rede.
+> A API é consumida pelo caminho relativo `/api` e o Vite faz **proxy** para a API local — sem CORS e sem depender do IP da máquina.
+> O destino do proxy pode ser trocado com a env `API_PROXY_TARGET` (padrão `http://localhost:3009`).
+
+#### Testar em outros aparelhos (LAN)
+
+1. Conecte os aparelhos à **mesma rede Wi-Fi** da máquina.
+2. Suba a API (`npm run start:dev`) e o frontend (`npm run dev`).
+3. No console do Vite, copie a **Network URL** (ex.: `http://192.168.x.x:5173`) e abra-a nos aparelhos.
+4. Se o Windows pedir permissão de firewall para o Node, **permita em redes privadas**.
+5. Em dispositivos iPhone/iPad, o Vite dev server pode ser bloqueado pelo App Transport Security; use Chrome/Safari e, se necessário, conecte via `http://` explícito.
 
 ---
 
@@ -161,7 +192,9 @@ npm run dev               # http://localhost:5173
 
 ---
 
-## 🛣️ Roadmap (MVP)
+## 🛣️ Roadmap
+
+### R1 (MVP) — entregue
 
 - [x] Aplicação de papéis (ADMIN/COORDINATOR) nas rotas e na interface
 - [x] Gestão de usuários (criação, convite, alteração de papel)
@@ -170,7 +203,20 @@ npm run dev               # http://localhost:5173
 - [x] Tutorial de boas-vindas (onboarding) com replay pelo menu lateral
 - [x] Dashboard com métricas reais e exportação da escala semanal
 
----
+### R2 (coordenador + mobile) — entregue
+
+- [x] Desfazer em desativações (usuários, famílias e missionários)
+- [x] Sinais de contexto no calendário (badge de rotação e número da semana)
+- [x] Ala configurável via `VITE_WARD_NAME`
+- [x] Compartilhamento da escala por Web Share API no mobile
+- [x] Mobile-first: bottom nav, modais como bottom-sheet, touch targets ≥ 40px
+- [x] Dashboard mobile com stats do mês e header compacto
+
+### R3 — entregue
+
+- [x] **Dark mode / dark theme** com detecção automática do aparelho (sistema/claro/escuro) e preferência salva
+- [x] Navegação por teclado no calendário (setas + `aria-live`)
+- [x] Validação da autenticação e navegação mobile pela rede local
 
 ---
 

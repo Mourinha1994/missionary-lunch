@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { useForm, type Resolver } from 'react-hook-form'
+import { Controller, useForm, type Resolver } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
@@ -7,6 +7,7 @@ import { pdayApi } from '@/api/pday'
 import { useAuthStore } from '@/store/authStore'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { DateInput } from '@/components/ui/date-input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
@@ -134,7 +135,7 @@ function TransferWeekModal({ open, onClose }: { open: boolean; onClose: () => vo
                 <div className="space-y-4 py-1">
                     <div className="space-y-1.5">
                         <Label>Semana</Label>
-                        <Input type="date" value={startDate} min={dayjs().format('YYYY-MM-DD')} onChange={e => setStartDate(e.target.value)} />
+                        <DateInput value={startDate} min={dayjs().format('YYYY-MM-DD')} onChange={e => setStartDate(e.target.value)} />
                         <p className="text-xs text-text-400 capitalize">
                             {weekStart.format('ddd, DD/MM')} — {weekStart.add(6, 'day').format('ddd, DD/MM/YYYY')}
                         </p>
@@ -217,7 +218,7 @@ type ExceptionForm = z.infer<typeof exceptionSchema>
 
 function ConfigModal({ open, onClose }: { open: boolean; onClose: () => void }) {
     const qc = useQueryClient()
-    const { register, handleSubmit, watch, formState: { errors }, reset } = useForm<ConfigForm>({
+    const { register, handleSubmit, watch, control, formState: { errors }, reset } = useForm<ConfigForm>({
         resolver: zodResolver(configSchema) as unknown as Resolver<ConfigForm>,
         defaultValues: { dayOfWeek: 1 },
     })
@@ -275,7 +276,13 @@ function ConfigModal({ open, onClose }: { open: boolean; onClose: () => void }) 
 
                     <div className="space-y-1.5">
                         <Label>Válido a partir de</Label>
-                        <Input type="date" {...register('startDate')} min={dayjs().format('YYYY-MM-DD')} />
+                        <Controller
+                            name="startDate"
+                            control={control}
+                            render={({ field }) => (
+                                <DateInput {...field} min={dayjs().format('YYYY-MM-DD')} />
+                            )}
+                        />
                         {errors.startDate && <p className="text-xs text-danger-600">{errors.startDate.message}</p>}
                     </div>
 
@@ -319,7 +326,7 @@ function ExceptionModal({
     defaultBlocked: boolean
 }) {
     const qc = useQueryClient()
-    const { register, handleSubmit, formState: { errors }, reset } = useForm<ExceptionForm>({
+    const { register, handleSubmit, control, formState: { errors }, reset } = useForm<ExceptionForm>({
         resolver: zodResolver(exceptionSchema),
         defaultValues: { blocked: defaultBlocked },
     })
@@ -362,7 +369,13 @@ function ExceptionModal({
                 <form onSubmit={handleSubmit(d => save.mutate({ ...d, blocked: defaultBlocked }))} className="space-y-4 py-1">
                     <div className="space-y-1.5">
                         <Label>Data da exceção</Label>
-                        <Input type="date" {...register('date')} min={dayjs().format('YYYY-MM-DD')} />
+                        <Controller
+                            name="date"
+                            control={control}
+                            render={({ field }) => (
+                                <DateInput {...field} min={dayjs().format('YYYY-MM-DD')} />
+                            )}
+                        />
                         {errors.date && <p className="text-xs text-danger-600">{errors.date.message}</p>}
                     </div>
 

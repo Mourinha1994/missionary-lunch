@@ -6,6 +6,7 @@ import {
 import { useAuthStore } from '@/store/authStore'
 import { cn } from '@/lib/utils'
 import { startTutorial } from '@/lib/onboarding'
+import { ThemeSelector } from './ThemeSelector'
 import type { Role } from '@/types'
 
 const navItems = [
@@ -93,7 +94,14 @@ export function Sidebar() {
         )}
       </nav>
 
-      <div className="px-3 pt-3 pb-4 border-t border-white/10 flex items-center gap-2">
+      <div className="border-t border-white/10 px-3 pt-3">
+        <p className="mb-2 px-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-white/35">
+          Aparência
+        </p>
+        <ThemeSelector inverted />
+      </div>
+
+      <div className="px-3 pt-3 pb-4 flex items-center gap-2">
         <div className="w-8 h-8 rounded-full bg-brand-600 flex items-center justify-center text-xs font-semibold text-white shrink-0">
           {user?.name?.slice(0, 2).toUpperCase()}
         </div>

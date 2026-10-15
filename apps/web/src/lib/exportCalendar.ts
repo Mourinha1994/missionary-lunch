@@ -5,6 +5,9 @@ dayjs.locale('pt-br')
 
 const WEEK_DAYS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
 
+export const WARD_NAME =
+  (import.meta.env.VITE_WARD_NAME as string | undefined) ?? 'Ala Nilo Wulff'
+
 type CalendarBlockedDate = {
   date: string
   blocked?: boolean
@@ -37,7 +40,8 @@ function buildCalendarPDF(
   blockedDates: CalendarBlockedDate[],
   month: dayjs.Dayjs,
   fileName: string,
-) {
+  returnBlob = false,
+): Blob | void {
   const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' })
   const pageWidth = doc.internal.pageSize.getWidth()
   const pageHeight = doc.internal.pageSize.getHeight()
@@ -99,7 +103,7 @@ function buildCalendarPDF(
     doc.setTextColor(255, 255, 255)
     doc.setFont('helvetica', 'bold')
     doc.setFontSize(15)
-    doc.text('Calendário de Almoço dos Missionários - Ala Nilo Wulff', margin, 25)
+    doc.text(`Calendário de Almoço dos Missionários - ${WARD_NAME}`, margin, 25)
 
     doc.setFont('helvetica', 'normal')
     doc.setFontSize(9.5)
@@ -204,7 +208,51 @@ function buildCalendarPDF(
   doc.setLineWidth(0.4)
   doc.line(margin, y, pageWidth - margin, y)
 
+  if (returnBlob) return doc.output('blob')
   openPrintDialog(doc, fileName)
+}
+
+export function getCalendarBlob(
+  lunches: ScaleLunch[],
+  blockedDates: CalendarBlockedDate[] = [],
+  month = '',
+): Blob | null {
+  const sorted = sortLunches(lunches)
+  if (sorted.length === 0) return null
+  const monthStart = month ? dayjs(month).startOf('month') : dayjs(sorted[0].date).startOf('month')
+  const monthEnd = monthStart.endOf('month')
+  const monthLunches = sorted.filter((l) => {
+    const d = dayjs(l.date)
+    return !d.isBefore(monthStart, 'day') && !d.isAfter(monthEnd, 'day')
+  })
+  if (monthLunches.length === 0) return null
+  const fileName = `almoco-missionarios-${monthStart.format('MM-YYYY')}.pdf`
+  return buildCalendarPDF(monthLunches, blockedDates, monthStart, fileName, true) as Blob | null
+}
+
+/** No celular, compartilha o PDF via Web Share (WhatsApp/Arquivos/Imprimir); no desktop mantém a janela de impressão. */
+export async function shareOrPrint(
+  blob: Blob | null,
+  fileName: string,
+  title: string,
+  fallback: () => void,
+): Promise<void> {
+  if (
+    blob &&
+    navigator.share &&
+    navigator.canShare?.({ files: [new File([blob], fileName, { type: 'application/pdf' })] })
+  ) {
+    try {
+      await navigator.share({
+        files: [new File([blob], fileName, { type: 'application/pdf' })],
+        title,
+      })
+    } catch {
+      // usuário cancelou o compartilhamento
+    }
+    return
+  }
+  fallback()
 }
 
 // Paleta do design system (docs/design-system)
@@ -251,7 +299,13 @@ function sortLunches(lunches: ScaleLunch[]) {
   return [...lunches].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
 }
 
-function buildSchedulePDF(lunches: ScaleLunch[], title: string, subtitle: string, fileName: string) {
+function buildSchedulePDF(
+  lunches: ScaleLunch[],
+  title: string,
+  subtitle: string,
+  fileName: string,
+  returnBlob = false,
+): Blob | void {
   const doc = new jsPDF({ unit: 'pt', format: 'a4' })
   const pageWidth = doc.internal.pageSize.getWidth()
   const pageHeight = doc.internal.pageSize.getHeight()
@@ -417,6 +471,7 @@ function buildSchedulePDF(lunches: ScaleLunch[], title: string, subtitle: string
     y += row.h
   })
 
+  if (returnBlob) return doc.output('blob')
   openPrintDialog(doc, fileName)
 }
 
@@ -427,4 +482,25 @@ export function exportScaleAsPDF(lunches: ScaleLunch[], fileName = 'escala-almoc
   const last = dayjs(sorted[sorted.length - 1].date)
   const subtitle = `Missionários · ${first.format('DD/MM/YYYY')} – ${last.format('DD/MM/YYYY')} · ${sorted.length} almoço${sorted.length !== 1 ? 's' : ''}`
   buildSchedulePDF(sorted, 'Escala de Almoços', subtitle, fileName)
+}
+
+export function getScaleBlob(lunches: ScaleLunch[]): Blob | null {
+  const sorted = sortLunches(lunches)
+  if (sorted.length === 0) return null
+  const first = dayjs(sorted[0].date)
+  const last = dayjs(sorted[sorted.length - 1].date)
+  const subtitle = `Missionários · ${first.format('DD/MM/YYYY')} – ${last.format('DD/MM/YYYY')} · ${sorted.length} almoço${sorted.length !== 1 ? 's' : ''}`
+  return buildSchedulePDF(sorted, 'Escala de Almoços', subtitle, 'escala-almocos.pdf', true) as Blob | null
+}
+
+export function buildScaleText(lunches: ScaleLunch[]): string {
+  const sorted = sortLunches(lunches)
+  if (sorted.length === 0) return ''
+  const lines = [`Escala de Almoços dos Missionários - ${WARD_NAME}`, '']
+  for (const lunch of sorted) {
+    const date = capitalize(dayjs(lunch.date).format('dddd, DD/MM'))
+    const missionaries = lunch.missionaries.map((m) => m.name).join(', ')
+    lines.push(`- ${date}: ${lunch.familyName}${missionaries ? ` (${missionaries})` : ''}`)
+  }
+  return lines.join('\n')
 }

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useEffect } from 'react'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
@@ -8,11 +8,11 @@ import { missionariesApi } from '@/api/missionaries'
 import type { Missionary } from '@/types'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { DateInput } from '@/components/ui/date-input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Controller } from 'react-hook-form'
 import { toast } from 'sonner'
 import axios from 'axios'
 import {
@@ -198,13 +198,21 @@ function MissionaryFormModal({
 
                         <div className="space-y-1.5">
                             <Label>Data de início</Label>
-                            <Input type="date" {...register('startDate')} />
+                            <Controller
+                                name="startDate"
+                                control={control}
+                                render={({ field }) => <DateInput {...field} />}
+                            />
                             {errors.startDate && <p className="text-xs text-danger-600">{errors.startDate.message}</p>}
                         </div>
 
                         <div className="space-y-1.5">
                             <Label>Data de término</Label>
-                            <Input type="date" {...register('endDate')} />
+                            <Controller
+                                name="endDate"
+                                control={control}
+                                render={({ field }) => <DateInput {...field} />}
+                            />
                             {errors.endDate && <p className="text-xs text-danger-600">{errors.endDate.message}</p>}
                         </div>
 

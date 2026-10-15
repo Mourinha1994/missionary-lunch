@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { networkInterfaces } from 'os';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -39,9 +40,15 @@ async function bootstrap() {
 
   const port = process.env.PORT ?? 3000;
 
-  await app.listen(port);
+  // '0.0.0.0' deixa a API acessível na rede local (testes em outros aparelhos)
+  await app.listen(port, '0.0.0.0');
+
+  const lanIp = Object.values(networkInterfaces())
+    .flatMap((list) => list ?? [])
+    .find((iface) => iface.family === 'IPv4' && !iface.internal)?.address;
 
   console.log(`🚀 API rodando em http://localhost:${port}/api`);
+  console.log(`📡 Rede local: http://${lanIp ?? '0.0.0.0'}:${port}/api`);
   console.log(`📚 Swagger em http://localhost:${port}/api/docs`);
 }
 
